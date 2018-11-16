@@ -79,5 +79,6 @@ theme: yilia
 ## Docs: https://hexo.io/docs/deployment.html
 deploy: 
   type: git
-  repo: 
-  branch: 
+  repo: https://gitee.com/wangmingco/BlogSpace.git
+  branch: blog
+  message: "commit blog"
