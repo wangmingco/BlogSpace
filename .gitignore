@@ -15,8 +15,8 @@ Icon
 
 **/node_modules/
 **/public/
-**/.depoly_git/
-.depoly_git
+**/.deploy_git/
+.deploy_git
 
 # Thumbnails
 ._*
@@ -192,4 +192,3 @@ tags
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
-.deploy_git
