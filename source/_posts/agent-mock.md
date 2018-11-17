@@ -1,5 +1,5 @@
 ---
-title: 通过Java Agent来Mock出预期的行为
+title: 通过Java Agent的redefineClasses实现Mock功能
 ---
 
 # A)
