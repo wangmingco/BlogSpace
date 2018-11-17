@@ -5,17 +5,18 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="http://www.wangming.co">
   <title>分布式ID生成 | 向北向南</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="A)网络上现在有很多的分布式ID生成算法, 各大厂商也开源了自己的分布式id生成算法. 前段时间项目里有个生成唯一id的需求, 思考了一下, 将flick的id生成方案和Twitter的id生成算法结合到一起, 写了个小算法, 也算是站在巨人的肩膀上做了点小东西, lol B)原理大致是这样的, 利用mysql insert来计算出集群中某个节点处于集群中的位置, 算出serverId, 然后利用">
+<meta name="keywords" content="Java, JVM, 并发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式ID生成">
-<meta property="og:url" content="http://yoursite.com/2018/11/16/distributed-id/index.html">
+<meta property="og:url" content="http://www.wangming.co/2018/11/16/distributed-id/index.html">
 <meta property="og:site_name" content="向北向南">
 <meta property="og:description" content="A)网络上现在有很多的分布式ID生成算法, 各大厂商也开源了自己的分布式id生成算法. 前段时间项目里有个生成唯一id的需求, 思考了一下, 将flick的id生成方案和Twitter的id生成算法结合到一起, 写了个小算法, 也算是站在巨人的肩膀上做了点小东西, lol B)原理大致是这样的, 利用mysql insert来计算出集群中某个节点处于集群中的位置, 算出serverId, 然后利用">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-11-16T04:57:22.000Z">
+<meta property="og:updated_time" content="2018-11-17T02:23:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式ID生成">
 <meta name="twitter:description" content="A)网络上现在有很多的分布式ID生成算法, 各大厂商也开源了自己的分布式id生成算法. 前段时间项目里有个生成唯一id的需求, 思考了一下, 将flick的id生成方案和Twitter的id生成算法结合到一起, 写了个小算法, 也算是站在巨人的肩膀上做了点小东西, lol B)原理大致是这样的, 利用mysql insert来计算出集群中某个节点处于集群中的位置, 算出serverId, 然后利用">
@@ -81,13 +82,7 @@
 		<nav class="header-nav">
 			<div class="social">
 				
-					<a class="github" target="_blank" href="#" title="github"><i class="icon-github"></i></a>
-		        
-					<a class="weibo" target="_blank" href="#" title="weibo"><i class="icon-weibo"></i></a>
-		        
-					<a class="rss" target="_blank" href="#" title="rss"><i class="icon-rss"></i></a>
-		        
-					<a class="zhihu" target="_blank" href="#" title="zhihu"><i class="icon-zhihu"></i></a>
+					<a class="github" target="_blank" href="https://github.com/wangmingco/BlogSpace" title="github"><i class="icon-github"></i></a>
 		        
 			</div>
 		</nav>
@@ -122,13 +117,7 @@
 			<nav class="header-nav">
 				<div class="social">
 					
-						<a class="github" target="_blank" href="#" title="github"><i class="icon-github"></i></a>
-			        
-						<a class="weibo" target="_blank" href="#" title="weibo"><i class="icon-weibo"></i></a>
-			        
-						<a class="rss" target="_blank" href="#" title="rss"><i class="icon-rss"></i></a>
-			        
-						<a class="zhihu" target="_blank" href="#" title="zhihu"><i class="icon-zhihu"></i></a>
+						<a class="github" target="_blank" href="https://github.com/wangmingco/BlogSpace" title="github"><i class="icon-github"></i></a>
 			        
 				</div>
 			</nav>
@@ -194,7 +183,7 @@
             <span class="tooltip-content">
               <span class="tooltip-text">
                 <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>感谢您的支持<i class="icon icon-quo-right"></i></p>
                   <div class="reward-box">
                     
                     
@@ -260,7 +249,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/11/16/distributed-id/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://www.wangming.co/2018/11/16/distributed-id/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -272,6 +261,20 @@
 </article>
 
   
+<nav id="article-nav">
+  
+    <a href="/2018/11/16/pegjs-document/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          PEG.js Documentation
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
@@ -443,26 +446,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接1</a>
             </li>
           
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接2</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接3</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接4</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接5</a>
-            </li>
-          
-            <li class="search-li">
-              <a href="http://localhost:4000/" target="_blank" class="search-title"><i class="icon-quo-left icon"></i>友情链接6</a>
-            </li>
-          
         </ul>
   		
     	</section>
@@ -471,7 +454,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
     	<section class="tools-section tools-section-me" q-show="aboutme">
   	  	
-  	  		<div class="aboutme-wrap" id="js-aboutme">很惭愧&lt;br&gt;&lt;br&gt;只做了一点微小的工作&lt;br&gt;谢谢大家</div>
+  	  		<div class="aboutme-wrap" id="js-aboutme">有疑问可以再github上面留issue哈</div>
   	  	
     	</section>
     

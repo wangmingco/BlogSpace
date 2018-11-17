@@ -6,14 +6,14 @@
 title: 向北向南
 subtitle:
 description:
-keywords:
+keywords: Java, JVM, 并发
 author: 向北向南
 language:
 timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: http://www.wangming.co
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -82,3 +82,22 @@ deploy:
   repo: https://github.com/wangmingco/BlogSpace.git
   branch: master
   message: "commit blog"
+
+jsonContent:
+    meta: false
+    pages: false
+    posts:
+      title: true
+      date: true
+      path: true
+      text: false
+      raw: false
+      content: false
+      slug: false
+      updated: false
+      comments: false
+      link: false
+      permalink: false
+      excerpt: false
+      categories: false
+      tags: true
