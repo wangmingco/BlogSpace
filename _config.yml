@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 向北向南
+title: 向南
 subtitle:
 description:
-keywords: Java, JVM, 并发
-author: 向北向南
+keywords:
+author: wangming
 language:
 timezone:
 
@@ -73,7 +73,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: yilia
+theme: even
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
@@ -82,22 +82,3 @@ deploy:
   repo: https://github.com/wangmingco/BlogSpace.git
   branch: master
   message: "commit blog"
-
-jsonContent:
-    meta: false
-    pages: false
-    posts:
-      title: true
-      date: true
-      path: true
-      text: false
-      raw: false
-      content: false
-      slug: false
-      updated: false
-      comments: false
-      link: false
-      permalink: false
-      excerpt: false
-      categories: false
-      tags: true
