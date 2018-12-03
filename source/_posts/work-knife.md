@@ -31,6 +31,8 @@ date: 2018-12-03 20:43:00
 * ttygif: 终端录屏工具
 * Teleport
 
+<!--more-->
+
 ## VSCode
 
 * Code Runner
@@ -53,3 +55,4 @@ date: 2018-12-03 20:43:00
 * JavaCC Plugin
 * Translation
 
+<!--more-->

@@ -32,6 +32,8 @@ $ npm install pegjs
 ```
 如果既要使用`pegjs`命令又要使用JavaScript API, 那么你需要将上面俩种方式都安装一遍.
 
+<!--more-->
+
 ### Browser
 通过`Bower`安装 `PEG.js`:
 ```
