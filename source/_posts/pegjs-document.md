@@ -1,5 +1,6 @@
 ---
 title: PEG.js Documentation
+date: 2018-11-15 21:21:00
 ---
 
 # Table of Contents
@@ -84,54 +85,70 @@ Makes the parser trace its progress.
 
 ### JavaScript API
 In Node.js, require the PEG.js parser generator module:
+在node.js中, 你只需要直接`require("pegjs")` peg.js模块就可以了.
 ```javascript
 var peg = require("pegjs");
 ```
 In browser, include the PEG.js library in your web page or application using the `<script>` tag. If PEG.js detects an AMD loader, it will define itself as a module, otherwise the API will be available in the peg global object.
 
+如果你的web页面或应用运行在浏览器中, 你需要通过`<script>`标签引入`PEG.js`仓库. If PEG.js detects an AMD loader, it will define itself as a module, otherwise the API will be available in the peg global object.
+
 To generate a parser, call the peg.generate method and pass your grammar as a parameter:
+生成一个parser也非常简单, 只需要调用`peg.generate`方法, 如果把你的解析器文法参数传递进去就可以了
 ```javascript
 var parser = peg.generate("start = ('a' / 'b')+");
 ```
 The method will return generated parser object or its source code as a string (depending on the value of the output option — see below). It will throw an exception if the grammar is invalid. The exception will contain message property with more details about the error.
 
-You can tweak the generated parser by passing a second parameter with an options object to peg.generate. The following options are supported:
+这个方法会返回一个新生成的parser对象或者是一个parser源码的字符串(这个取决于输出选项, 参考下面). 如果文法参数不合法的话, 会抛出一个异常(异常中会包含这个错误的详细信息). 
 
+You can tweak the generated parser by passing a second parameter with an options object to peg.generate. The following options are supported:
+我们还可以向`peg.generate` 方法传递第二个参数(该参数是一个对象), 这个参数会改变新生成的parser的行为. 支持的参数如下:
 * allowedStartRules: Rules the parser will be allowed to start parsing from (default: the first rule in the grammar).
+* allowedStartRules: 指定parser开始的rule. (默认是文法中第一个rule.)
 * cache: If true, makes the parser cache results, avoiding exponential parsing time in pathological cases but making the parser slower (default: false).
+* cache: 如果设置为`true`, parser会将parse的结果缓存起来, 可以避免在极端情况下过长的解析时间, 但同时它带来的副作用是会使得parser变慢(默认false).
 * dependencies
 Parser dependencies, the value is an object which maps variables used to access the dependencies in the parser to module IDs used to load them; valid only when format is set to "amd", "commonjs", or "umd" (default: {}).
+* dependencies: 
 * exportVar
 Name of a global variable into which the parser object is assigned to when no module loader is detected; valid only when format is set to "globals" or "umd" (default: null).
-* format
+* exportVar: 
+* format: 对生成的parser进行格式化, 可选值为(`"amd"`, `"bare"`, `"commonjs"`, `"globals"`, or `"umd"`). 只有`output`设置为`source`, 该参数才生效
 format of the generated parser ("amd", "bare", "commonjs", "globals", or "umd"); valid only when output is set to "source" (default: "bare").
-* optimize
+* optimize: 为生成的parser选择一个优化方案, 可选值为`"speed"`或者`"size"`. (默认`"speed"`)
 Selects between optimizing the generated parser for parsing speed ("speed") or code size ("size") (default: "speed").
-* output
+* output: 设置`generate()`方法返回格式. 如果值为`"parser"`, 则返回生成的parser对象. 如果设置为`"source"`, 则返回parser source字符串
 If set to "parser", the method will return generated parser object; if set to "source", it will return parser source code as a string (default: "parser").
-* plugins
+* plugins: 要使用的插件
 Plugins to use.
-* trace
+* trace: 追踪parser的执行过程(默认是false).
 Makes the parser trace its progress (default: false).
 
 ## Using the Parser
 Using the generated parser is simple — just call its parse method and pass an input string as a parameter. The method will return a parse result (the exact value depends on the grammar used to generate the parser) or throw an exception if the input is invalid. The exception will contain location, expected, found and message properties with more details about the error.
+
+使用生成的parser也非常简单, 只需要调用parser对象的`parse`方法, 然后将一个字符串参数传递进该方法就可以了. 然后该方法会返回一个parse结果(已经在定义parser的文法中描述了返回何种类型的值), 或者如果字符串不合法的话抛出一个异常. 异常会输出详细的错误信息.
 ```javascript
 parser.parse("abba"); // returns ["a", "b", "b", "a"]
 
 parser.parse("abcd"); // throws an exception 
 ```
 You can tweak parser behavior by passing a second parameter with an options object to the parse method. The following options are supported:
-
-* startRule: Name of the rule to start parsing from.
-* tracer: Tracer to use.
+同样的, 你也可以在该方法中传递一个parse选项参数, 以改变`parse()`方法的默认行为. 支持的参数如下:
+* startRule: Name of the rule to start parsing from. 开始从哪个rule执行.
+* tracer: Tracer to use. 开启tracer.
 
 Parsers can also support their own custom options.
+Parsers 也可以自定义参数, 以支持定制化的需求.
 
 ## Grammar Syntax and Semantics
 The grammar syntax is similar to JavaScript in that it is not line-oriented and ignores whitespace between tokens. You can also use JavaScript-style comments (// ... and /* ... */).
-
 Let's look at example grammar that recognizes simple arithmetic expressions like 2*(3+4). A parser generated from this grammar computes their values.
+
+peg.js的语法和JavaScript非常像, 但是有俩点不同, pegjs不是line-oriented, 而且peg.js会忽略tokens之间的空白符. 你可以在peg.js文法文件中使用`//...`和`/* ... */`注释
+下来有个peg.js文法示例, 该示例生成的parser会识别出算数表达式 `2*(3+4)`, 然后将该值计算出来.
+
 ```javascript
 start
   = additive
@@ -157,6 +174,7 @@ On the top level, the grammar consists of rules (in our example, there are five 
 A rule name must be a JavaScript identifier. It is followed by an equality sign (“=”) and a parsing expression. If the rule has a human-readable name, it is written as a JavaScript string between the name and separating equality sign. Rules need to be separated only by whitespace (their beginning is easily recognizable), but a semicolon (“;”) after the parsing expression is allowed.
 
 The first rule can be preceded by an initializer — a piece of JavaScript code in curly braces (“{” and “}”). This code is executed before the generated parser starts parsing. All variables and functions defined in the initializer are accessible in rule actions and semantic predicates. The code inside the initializer can access options passed to the parser using the options variable. Curly braces in the initializer code must be balanced. Let's look at the example grammar from above using a simple initializer.
+
 ```javascript
 {
   function makeInteger(o) {
@@ -182,6 +200,7 @@ primary
 integer "integer"
   = digits:[0-9]+ { return makeInteger(digits); }
 ```
+
 The parsing expressions of the rules are used to match the input text to the grammar. There are various types of expressions — matching characters or character classes, indicating optional parts and repetition, etc. Expressions can also contain references to other rules. See detailed description below.
 
 If an expression successfully matches a part of the text when running the generated parser, it produces a match result, which is a JavaScript value. For example:
@@ -253,12 +272,14 @@ The predicate is a piece of JavaScript code that is executed as if it was inside
 The code inside the predicate can access all variables and functions defined in the initializer at the beginning of the grammar.
 
 The code inside the predicate can also access location information using the location function. It returns an object like this:
+
 ```javascript
 {
   start: { offset: 23, line: 5, column: 6 },
   end:   { offset: 23, line: 5, column: 6 }
 }
 ```
+
 The start and end properties both refer to the current parse position. The offset property contains an offset as a zero-based index and line and column properties contain a line and a column as one-based indices.
 
 The code inside the predicate can also access options passed to the parser using the options variable.
@@ -290,6 +311,7 @@ The code inside the action can access all variables and functions defined in the
 The code inside the action can also access the text matched by the expression using the text function.
 
 The code inside the action can also access location information using the location function. It returns an object like this:
+
 ```javascript
 {
   start: { offset: 23, line: 5, column: 6 },
