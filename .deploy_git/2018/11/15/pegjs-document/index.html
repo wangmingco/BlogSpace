@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="">
+  <head><meta name="generator" content="Hexo 3.8.0">
+    
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+<meta name="theme-color" content="#f8f5ec">
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="PEG.js Documentation">
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternate" href="/default" title="向南">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.10.1">
+
+
+
+<link rel="canonical" href="http://www.wangming.co/2018/11/15/pegjs-document/">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/fancybox/jquery.fancybox.css">
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/lib/nprogress/nprogress.min.css">
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.10.1">
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+<script>
+  window.config = {"leancloud":{"app_id":null,"app_key":null},"toc":true,"fancybox":true,"pjax":true};
+</script>
+
+    <title> PEG.js Documentation - 向南 </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">向南</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+      <a href="/tags">
+        <li class="mobile-menu-item">
+          
+          
+            标签
+          
+        </li>
+      </a>
+    
+      <a href="/categories">
+        <li class="mobile-menu-item">
+          
+          
+            分类
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">向南</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/tags">
+            
+            
+              标签
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/categories">
+            
+            
+              分类
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          PEG.js Documentation
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2018-11-15
+        </span>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Features"><span class="toc-text">Features</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Installation"><span class="toc-text">Installation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Node-js"><span class="toc-text">Node.js</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Browser"><span class="toc-text">Browser</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Generating-a-Parser"><span class="toc-text">Generating a Parser</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Command-Line"><span class="toc-text">Command Line</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JavaScript-API"><span class="toc-text">JavaScript API</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Using-the-Parser"><span class="toc-text">Using the Parser</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Grammar-Syntax-and-Semantics"><span class="toc-text">Grammar Syntax and Semantics</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Parsing-Expression-Types"><span class="toc-text">Parsing Expression Types</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#quot-literal-quot"><span class="toc-text">&quot;literal&quot;</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#39-literal-39"><span class="toc-text">&#39;literal&#39;</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#"><span class="toc-text">.</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#characters"><span class="toc-text">[characters]</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#rule"><span class="toc-text">rule</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#expression"><span class="toc-text">( expression )</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#expression-1"><span class="toc-text">expression *</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#expression-2"><span class="toc-text">expression +</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#expression-3"><span class="toc-text">expression ?</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#amp-expression"><span class="toc-text">&amp; expression</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#expression-4"><span class="toc-text">! expression</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#amp-predicate"><span class="toc-text">&amp; { predicate }</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#predicate"><span class="toc-text">! { predicate }</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#expression-5"><span class="toc-text">$ expression</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#label-expression"><span class="toc-text">label : expression</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#expression1-expression2-expressionn"><span class="toc-text">expression1 expression2 ... expressionn</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#expression-action"><span class="toc-text">expression { action }</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#expression1-expression2-expressionn-1"><span class="toc-text">expression1 / expression2 / ... / expressionn</span></a></li></ol></li></ol></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#Compatibility"><span class="toc-text">Compatibility</span></a></li>
+    </div>
+  </div>
+
+
+
+    <div class="post-content">
+      
+        <p>PEG.js is a simple parser generator for JavaScript that produces fast parsers with excellent error reporting. You can use it to process complex data or computer languages and build transformers, interpreters, compilers and other tools easily.</p>
+<p>PEG.js是JavaScript里一个简单的parser生成器, 它能够非常快的生成parser, 而且如果在生成过程中遇到了问题, 也会给出非常明确的错误报告. 你可以很轻松地用它处理复杂的数据结构或者计算机语言, 也可以构建出transformers, interpreters, compilers 等其他工具.</p>
+<h2 id="Features"><a href="#Features" class="headerlink" title="Features"></a>Features</h2><p>PEG.js具有如下特性</p>
+<ul>
+<li>Simple and expressive grammar syntax. 简单而富有表现力的语法</li>
+<li>Integrates both lexical and syntactical analysis. 集成了词法和语法分析.</li>
+<li>Parsers have excellent error reporting out of the box . 生成的解析器具有出色的错误报告功能</li>
+<li>Based on parsing expression grammar formalism — more powerful than traditional LL(k) and LR(k) parsers. 基于parsing expression grammar, 比传统的 LL(k) 和 LR(k) parser更加强大.</li>
+<li>Usable from your browser, from the command line, or via JavaScript API. 适用于浏览器, 命令行或者JavaScript API 等多种环境.</li>
+</ul>
+<h2 id="Installation"><a href="#Installation" class="headerlink" title="Installation"></a>Installation</h2><h2 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h2><p>要使用<code>pegjs</code>命令的话, 需要使用全局模式安装<code>PEG.js</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g pegjs</span><br></pre></td></tr></table></figure></p>
+<p>要使用<code>JavaScript API</code>, 需要使用<code>locally</code>模式安装 <code>PEG.js</code> :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install pegjs</span><br></pre></td></tr></table></figure></p>
+<p>如果既要使用<code>pegjs</code>命令又要使用JavaScript API, 那么你需要将上面俩种方式都安装一遍.</p>
+<a id="more"></a>
+<h3 id="Browser"><a href="#Browser" class="headerlink" title="Browser"></a>Browser</h3><p>通过<code>Bower</code>安装 <code>PEG.js</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bower install pegjs</span><br></pre></td></tr></table></figure></p>
+<h2 id="Generating-a-Parser"><a href="#Generating-a-Parser" class="headerlink" title="Generating a Parser"></a>Generating a Parser</h2><p>PEG.js generates parser from a grammar that describes expected input and can specify what the parser returns (using semantic actions on matched parts of the input). Generated parser itself is a JavaScript object with a simple API.</p>
+<p><code>PEG.js</code>根据一个grammar生成parser, 我们可以描述这个grammar希望获得怎么样的输入以及指定parser返回的内容(using semantic actions on matched parts of the input). 通过一个简单api就可以可以生成一个parser JS对象.</p>
+<h3 id="Command-Line"><a href="#Command-Line" class="headerlink" title="Command Line"></a>Command Line</h3><p>To generate a parser from your grammar, use the pegjs command:<br>想要将你的grammar生成parser, 直接像下面这样使用<code>pegjs</code>命令就好:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pegjs arithmetics.pegjs</span><br></pre></td></tr></table></figure></p>
+<p>This writes parser source code into a file with the same name as the grammar file but with “.js” extension. You can also specify the output file explicitly:<br>上面的命令会将生成的parser的源码输出到与grammar文件同名的js结尾的文件中. 我们也可以像下面这样输出到指定文件中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pegjs -o arithmetics-parser.js arithmetics.pegjs</span><br></pre></td></tr></table></figure></p>
+<p>If you omit both input and output file, standard input and output are used.<br>但是如果你将输入输出文件都忽略了, 那么系统将会采用标准输入输出.</p>
+<p>By default, the generated parser is in the Node.js module format. You can override this using the * –format option.<br>在默认设置下, 生成的parser代码是以Node.js module format 进行格式化的, 你可以通过指定<code>--format</code>选项来改变它.</p>
+<p>You can tweak the generated parser with several options:<br>你可以通过如下几个命令来修改生成的parser的默认行为.</p>
+<ul>
+<li><p><code>--allowed-start-rules</code>: Comma-separated list of rules the parser will be allowed to start parsing from (default: the first rule in the grammar).</p>
+</li>
+<li><p><code>--cache</code>: 开启parser的缓存功能. 在这种情况下, parser会将parse出来的结果缓存起来, 避免极端情况下解析时间成指数级增加, 但是坏处是parser可能会变慢.<br>Makes the parser cache results, avoiding exponential parsing time in pathological cases but making the parser slower.</p>
+</li>
+<li><code>--dependency</code>: 让parser依赖一个指定的依赖.(该参数可以多次使用)<br>Makes the parser require a specified dependency (can be specified multiple times).</li>
+<li><code>--export-var</code>:<br>Name of a global variable into which the parser object is assigned to when no module loader is detected.</li>
+<li><code>--extra-options</code>: 传递给<code>peg.generate</code>的额外参数(JSON 形式).<br>Additional options (in JSON format) to pass to peg.generate.</li>
+<li><code>--extra-options-file</code>: 传递给<code>peg.generate</code>的额外参数文件(JSON 形式).<br>File with additional options (in JSON format) to pass to peg.generate.</li>
+<li><code>--format</code>: 生成的parser格式, 可选值有<code>amd</code>, <code>commonjs</code>, <code>globals</code>, <code>umd</code>(默认是<code>commonjs</code>)<br>Format of the generated parser: amd, commonjs, globals, umd (default: commonjs).</li>
+<li><code>--optimize</code>: 为生成的parser在parsing时的优化方式, 可以选择解析速度(<code>speed</code>)或者parse结果代码大小(<code>size</code>). (默认是<code>speed</code>)<br>Selects between optimizing the generated parser for parsing speed (speed) or code size (size) (default: speed)</li>
+<li><code>--plugin</code>: 为PEG.js配置插件(可以配置多个, 即多次配置)<br>Makes PEG.js use a specified plugin (can be specified multiple times).</li>
+<li><code>--trace</code>: 开启parser的trace功能.<br>Makes the parser trace its progress.</li>
+</ul>
+<h3 id="JavaScript-API"><a href="#JavaScript-API" class="headerlink" title="JavaScript API"></a>JavaScript API</h3><p>In Node.js, require the PEG.js parser generator module:<br>在node.js中, 你只需要直接<code>require(&quot;pegjs&quot;)</code> peg.js模块就可以了.<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> peg = <span class="built_in">require</span>(<span class="string">"pegjs"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>In browser, include the PEG.js library in your web page or application using the <code>&lt;script&gt;</code> tag. If PEG.js detects an AMD loader, it will define itself as a module, otherwise the API will be available in the peg global object.</p>
+<p>如果你的web页面或应用运行在浏览器中, 你需要通过<code>&lt;script&gt;</code>标签引入<code>PEG.js</code>仓库. If PEG.js detects an AMD loader, it will define itself as a module, otherwise the API will be available in the peg global object.</p>
+<p>To generate a parser, call the peg.generate method and pass your grammar as a parameter:<br>生成一个parser也非常简单, 只需要调用<code>peg.generate</code>方法, 如果把你的解析器文法参数传递进去就可以了<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> parser = peg.generate(<span class="string">"start = ('a' / 'b')+"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>The method will return generated parser object or its source code as a string (depending on the value of the output option — see below). It will throw an exception if the grammar is invalid. The exception will contain message property with more details about the error.</p>
+<p>这个方法会返回一个新生成的parser对象或者是一个parser源码的字符串(这个取决于输出选项, 参考下面). 如果文法参数不合法的话, 会抛出一个异常(异常中会包含这个错误的详细信息). </p>
+<p>You can tweak the generated parser by passing a second parameter with an options object to peg.generate. The following options are supported:<br>我们还可以向<code>peg.generate</code> 方法传递第二个参数(该参数是一个对象), 这个参数会改变新生成的parser的行为. 支持的参数如下:</p>
+<ul>
+<li>allowedStartRules: Rules the parser will be allowed to start parsing from (default: the first rule in the grammar).</li>
+<li>allowedStartRules: 指定parser开始的rule. (默认是文法中第一个rule.)</li>
+<li>cache: If true, makes the parser cache results, avoiding exponential parsing time in pathological cases but making the parser slower (default: false).</li>
+<li>cache: 如果设置为<code>true</code>, parser会将parse的结果缓存起来, 可以避免在极端情况下过长的解析时间, 但同时它带来的副作用是会使得parser变慢(默认false).</li>
+<li>dependencies<br>Parser dependencies, the value is an object which maps variables used to access the dependencies in the parser to module IDs used to load them; valid only when format is set to “amd”, “commonjs”, or “umd” (default: {}).</li>
+<li>dependencies: </li>
+<li>exportVar<br>Name of a global variable into which the parser object is assigned to when no module loader is detected; valid only when format is set to “globals” or “umd” (default: null).</li>
+<li>exportVar: </li>
+<li>format: 对生成的parser进行格式化, 可选值为(<code>&quot;amd&quot;</code>, <code>&quot;bare&quot;</code>, <code>&quot;commonjs&quot;</code>, <code>&quot;globals&quot;</code>, or <code>&quot;umd&quot;</code>). 只有<code>output</code>设置为<code>source</code>, 该参数才生效<br>format of the generated parser (“amd”, “bare”, “commonjs”, “globals”, or “umd”); valid only when output is set to “source” (default: “bare”).</li>
+<li>optimize: 为生成的parser选择一个优化方案, 可选值为<code>&quot;speed&quot;</code>或者<code>&quot;size&quot;</code>. (默认<code>&quot;speed&quot;</code>)<br>Selects between optimizing the generated parser for parsing speed (“speed”) or code size (“size”) (default: “speed”).</li>
+<li>output: 设置<code>generate()</code>方法返回格式. 如果值为<code>&quot;parser&quot;</code>, 则返回生成的parser对象. 如果设置为<code>&quot;source&quot;</code>, 则返回parser source字符串<br>If set to “parser”, the method will return generated parser object; if set to “source”, it will return parser source code as a string (default: “parser”).</li>
+<li>plugins: 要使用的插件<br>Plugins to use.</li>
+<li>trace: 追踪parser的执行过程(默认是false).<br>Makes the parser trace its progress (default: false).</li>
+</ul>
+<h2 id="Using-the-Parser"><a href="#Using-the-Parser" class="headerlink" title="Using the Parser"></a>Using the Parser</h2><p>Using the generated parser is simple — just call its parse method and pass an input string as a parameter. The method will return a parse result (the exact value depends on the grammar used to generate the parser) or throw an exception if the input is invalid. The exception will contain location, expected, found and message properties with more details about the error.</p>
+<p>使用生成的parser也非常简单, 只需要调用parser对象的<code>parse</code>方法, 然后将一个字符串参数传递进该方法就可以了. 然后该方法会返回一个parse结果(已经在定义parser的文法中描述了返回何种类型的值), 或者如果字符串不合法的话抛出一个异常. 异常会输出详细的错误信息.<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">parser.parse(<span class="string">"abba"</span>); <span class="comment">// returns ["a", "b", "b", "a"]</span></span><br><span class="line"></span><br><span class="line">parser.parse(<span class="string">"abcd"</span>); <span class="comment">// throws an exception</span></span><br></pre></td></tr></table></figure></p>
+<p>You can tweak parser behavior by passing a second parameter with an options object to the parse method. The following options are supported:<br>同样的, 你也可以在该方法中传递一个parse选项参数, 以改变<code>parse()</code>方法的默认行为. 支持的参数如下:</p>
+<ul>
+<li>startRule: Name of the rule to start parsing from. 开始从哪个rule执行.</li>
+<li>tracer: Tracer to use. 开启tracer.</li>
+</ul>
+<p>Parsers can also support their own custom options.<br>Parsers 也可以自定义参数, 以支持定制化的需求.</p>
+<h2 id="Grammar-Syntax-and-Semantics"><a href="#Grammar-Syntax-and-Semantics" class="headerlink" title="Grammar Syntax and Semantics"></a>Grammar Syntax and Semantics</h2><p>The grammar syntax is similar to JavaScript in that it is not line-oriented and ignores whitespace between tokens. You can also use JavaScript-style comments (// … and /<em> … </em>/).<br>Let’s look at example grammar that recognizes simple arithmetic expressions like 2*(3+4). A parser generated from this grammar computes their values.</p>
+<p>peg.js的语法和JavaScript非常像, 但是有俩点不同, pegjs不是line-oriented, 而且peg.js会忽略tokens之间的空白符. 统同样地你可以在peg.js文法文件中使用<code>//...</code>和<code>/* ... */</code>注释</p>
+<p>下面是个peg.js文法示例, 该示例生成的parser会识别出算数表达式 <code>2*(3+4)</code>, 然后将该值计算出来.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">start</span><br><span class="line">  = additive</span><br><span class="line"></span><br><span class="line">additive</span><br><span class="line">  = left:multiplicative <span class="string">"+"</span> right:additive &#123; <span class="keyword">return</span> left + right; &#125;</span><br><span class="line">  / multiplicative</span><br><span class="line"></span><br><span class="line">multiplicative</span><br><span class="line">  = left:primary <span class="string">"*"</span> right:multiplicative &#123; <span class="keyword">return</span> left * right; &#125;</span><br><span class="line">  / primary</span><br><span class="line"></span><br><span class="line">primary</span><br><span class="line">  = integer</span><br><span class="line">  / <span class="string">"("</span> additive:additive <span class="string">")"</span> &#123; <span class="keyword">return</span> additive; &#125;</span><br><span class="line"></span><br><span class="line">integer <span class="string">"integer"</span></span><br><span class="line">  = digits:[<span class="number">0</span><span class="number">-9</span>]+ &#123; <span class="keyword">return</span> <span class="built_in">parseInt</span>(digits.join(<span class="string">""</span>), <span class="number">10</span>); &#125;</span><br></pre></td></tr></table></figure>
+<p>On the top level, the grammar consists of rules (in our example, there are five of them). Each rule has a name (e.g. integer) that identifies the rule, and a parsing expression (e.g. digits:[0-9]+ { return parseInt(digits.join(“”), 10); }) that defines a pattern to match against the input text and possibly contains some JavaScript code that determines what happens when the pattern matches successfully. A rule can also contain human-readable name that is used in error messages (in our example, only the integer rule has a human-readable name). The parsing starts at the first rule, which is also called the start rule.</p>
+<p>从总体上来说, 文法是由rule组成的.每个rule都有一个名字(例如上例中的:<code>integer</code>) 和 一个解析表达式(例如上例中的:<code>digits:[0-9]+ { return parseInt(digits.join(&quot;&quot;), 10); }</code>), 该表达式主要由俩部分组成, 匹配输入字符串的表达式规则和 匹配成功之后要执行的JavaScript代码. rule也可以设置一个对人类比较可读的名称, 例如上例中的integer就有一个别名, 该别名主要用于发生解析异常时, 输出日志便于解决问题. 解析动作从第一个rule开始, 我们通常以<code>start</code>命名这个rule.</p>
+<p>A rule name must be a JavaScript identifier. It is followed by an equality sign (“=”) and a parsing expression. If the rule has a human-readable name, it is written as a JavaScript string between the name and separating equality sign. Rules need to be separated only by whitespace (their beginning is easily recognizable), but a semicolon (“;”) after the parsing expression is allowed. </p>
+<p>rule名称必须符合JavaScript的标识符规则. rule名称后跟一个<code>=</code>符号, 该符号后跟一个解析表达式. 如果rule名称要跟一个别名的话, 该别名必须在rule名称与<code>=</code>之间. rule之间需要由空白符进行分割, rule后也可以跟一个分号<code>;</code></p>
+<p>The first rule can be preceded by an initializer — a piece of JavaScript code in curly braces (“{” and “}”). This code is executed before the generated parser starts parsing. All variables and functions defined in the initializer are accessible in rule actions and semantic predicates. The code inside the initializer can access options passed to the parser using the options variable. Curly braces in the initializer code must be balanced. Let’s look at the example grammar from above using a simple initializer.</p>
+<p>在第一个规则之前可以包含一段初始化JavaScript代码, 这段JavaScript代码必须被包含在花括号(“{“和”}”)里. 这段初始化代码会在parser开始解析之前被执行. 初始化代码块里面的变量和方法可以被后续的rule访问到. 初始化代码可以通过访问<code>options</code>参数访问到传递给parser的参数. Curly braces in the initializer code must be balanced. 下面我们看一个简单的使用了初始化代码的示例:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">makeInteger</span>(<span class="params">o</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">parseInt</span>(o.join(<span class="string">""</span>), <span class="number">10</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">start</span><br><span class="line">  = additive</span><br><span class="line"></span><br><span class="line">additive</span><br><span class="line">  = left:multiplicative <span class="string">"+"</span> right:additive &#123; <span class="keyword">return</span> left + right; &#125;</span><br><span class="line">  / multiplicative</span><br><span class="line"></span><br><span class="line">multiplicative</span><br><span class="line">  = left:primary <span class="string">"*"</span> right:multiplicative &#123; <span class="keyword">return</span> left * right; &#125;</span><br><span class="line">  / primary</span><br><span class="line"></span><br><span class="line">primary</span><br><span class="line">  = integer</span><br><span class="line">  / <span class="string">"("</span> additive:additive <span class="string">")"</span> &#123; <span class="keyword">return</span> additive; &#125;</span><br><span class="line"></span><br><span class="line">integer <span class="string">"integer"</span></span><br><span class="line">  = digits:[<span class="number">0</span><span class="number">-9</span>]+ &#123; <span class="keyword">return</span> makeInteger(digits); &#125;</span><br></pre></td></tr></table></figure>
+<p>The parsing expressions of the rules are used to match the input text to the grammar. There are various types of expressions — matching characters or character classes, indicating optional parts and repetition, etc. Expressions can also contain references to other rules. See detailed description below.</p>
+<p>If an expression successfully matches a part of the text when running the generated parser, it produces a match result, which is a JavaScript value. For example:</p>
+<ul>
+<li>An expression matching a literal string produces a JavaScript string containing matched text.</li>
+<li>An expression matching repeated occurrence of some subexpression produces a JavaScript array with all the matches.</li>
+</ul>
+<p>The match results propagate through the rules when the rule names are used in expressions, up to the start rule. The generated parser returns start rule’s match result when parsing is successful.</p>
+<p>One special case of parser expression is a parser action — a piece of JavaScript code inside curly braces (“{” and “}”) that takes match results of some of the the preceding expressions and returns a JavaScript value. This value is considered match result of the preceding expression (in other words, the parser action is a match result transformer).</p>
+<p>In our arithmetics example, there are many parser actions. Consider the action in expression digits:[0-9]+ { return parseInt(digits.join(“”), 10); }. It takes the match result of the expression [0-9]+, which is an array of strings containing digits, as its parameter. It joins the digits together to form a number and converts it to a JavaScript number object.</p>
+<h3 id="Parsing-Expression-Types"><a href="#Parsing-Expression-Types" class="headerlink" title="Parsing Expression Types"></a>Parsing Expression Types</h3><p>There are several types of parsing expressions, some of them containing subexpressions and thus forming a recursive structure:</p>
+<p>解析表达式可以分为很多种类, 而且有一些还包含子表达式, 包含子表达式的就形成了一种递归结构.</p>
+<h5 id="quot-literal-quot"><a href="#quot-literal-quot" class="headerlink" title="&quot;literal&quot;"></a><code>&quot;literal&quot;</code></h5><h5 id="39-literal-39"><a href="#39-literal-39" class="headerlink" title="&#39;literal&#39;"></a><code>&#39;literal&#39;</code></h5><p>Match exact literal string and return it. The string syntax is the same as in JavaScript. Appending i right after the literal makes the match case-insensitive.</p>
+<p>严格匹配字面量字符串, 然后直接返回该字符串字面量. 在pegjs里字符串语法和JavaScript里相同. 在常量最后加一个<code>i</code>表示不区分大小写.</p>
+<h5 id=""><a href="#" class="headerlink" title="."></a><code>.</code></h5><p>Match exactly one character and return it as a string.</p>
+<p>严格匹配一个字符, 然后将它作为一个字符串返回.</p>
+<h5 id="characters"><a href="#characters" class="headerlink" title="[characters]"></a><code>[characters]</code></h5><p>Match one character from a set and return it as a string. The characters in the list can be escaped in exactly the same way as in JavaScript string. The list of characters can also contain ranges (e.g. [a-z] means “all lowercase letters”). Preceding the characters with ^ inverts the matched set (e.g. [^a-z] means “all character but lowercase letters”). Appending i right after the literal makes the match case-insensitive.</p>
+<h5 id="rule"><a href="#rule" class="headerlink" title="rule"></a><code>rule</code></h5><p>Match a parsing expression of a rule recursively and return its match result.</p>
+<h5 id="expression"><a href="#expression" class="headerlink" title="( expression )"></a><code>( expression )</code></h5><p>Match a subexpression and return its match result.</p>
+<h5 id="expression-1"><a href="#expression-1" class="headerlink" title="expression *"></a><code>expression *</code></h5><p>Match zero or more repetitions of the expression and return their match results in an array. The matching is greedy, i.e. the parser tries to match the expression as many times as possible. Unlike in regular expressions, there is no backtracking.</p>
+<h5 id="expression-2"><a href="#expression-2" class="headerlink" title="expression +"></a><code>expression +</code></h5><p>Match one or more repetitions of the expression and return their match results in an array. The matching is greedy, i.e. the parser tries to match the expression as many times as possible. Unlike in regular expressions, there is no backtracking.</p>
+<h5 id="expression-3"><a href="#expression-3" class="headerlink" title="expression ?"></a><code>expression ?</code></h5><p>Try to match the expression. If the match succeeds, return its match result, otherwise return null. Unlike in regular expressions, there is no backtracking.</p>
+<h5 id="amp-expression"><a href="#amp-expression" class="headerlink" title="&amp; expression"></a><code>&amp; expression</code></h5><p>Try to match the expression. If the match succeeds, just return undefined and do not consume any input, otherwise consider the match failed.</p>
+<h5 id="expression-4"><a href="#expression-4" class="headerlink" title="! expression"></a><code>! expression</code></h5><p>Try to match the expression. If the match does not succeed, just return undefined and do not consume any input, otherwise consider the match failed.</p>
+<h5 id="amp-predicate"><a href="#amp-predicate" class="headerlink" title="&amp; { predicate }"></a><code>&amp; { predicate }</code></h5><p>The predicate is a piece of JavaScript code that is executed as if it was inside a function. It gets the match results of labeled expressions in preceding expression as its arguments. It should return some JavaScript value using the return statement. If the returned value evaluates to true in boolean context, just return undefined and do not consume any input; otherwise consider the match failed.</p>
+<p>The code inside the predicate can access all variables and functions defined in the initializer at the beginning of the grammar.</p>
+<p>The code inside the predicate can also access location information using the location function. It returns an object like this:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  start: &#123; <span class="attr">offset</span>: <span class="number">23</span>, <span class="attr">line</span>: <span class="number">5</span>, <span class="attr">column</span>: <span class="number">6</span> &#125;,</span><br><span class="line">  end:   &#123; <span class="attr">offset</span>: <span class="number">23</span>, <span class="attr">line</span>: <span class="number">5</span>, <span class="attr">column</span>: <span class="number">6</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>The start and end properties both refer to the current parse position. The offset property contains an offset as a zero-based index and line and column properties contain a line and a column as one-based indices.</p>
+<p>The code inside the predicate can also access options passed to the parser using the options variable.</p>
+<p>Note that curly braces in the predicate code must be balanced.</p>
+<h5 id="predicate"><a href="#predicate" class="headerlink" title="! { predicate }"></a><code>! { predicate }</code></h5><p>The predicate is a piece of JavaScript code that is executed as if it was inside a function. It gets the match results of labeled expressions in preceding expression as its arguments. It should return some JavaScript value using the return statement. If the returned value evaluates to false in boolean context, just return undefined and do not consume any input; otherwise consider the match failed.</p>
+<p>The code inside the predicate can access all variables and functions defined in the initializer at the beginning of the grammar.</p>
+<p>The code inside the predicate can also access location information using the location function. It returns an object like this:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  start: &#123; <span class="attr">offset</span>: <span class="number">23</span>, <span class="attr">line</span>: <span class="number">5</span>, <span class="attr">column</span>: <span class="number">6</span> &#125;,</span><br><span class="line">  end:   &#123; <span class="attr">offset</span>: <span class="number">23</span>, <span class="attr">line</span>: <span class="number">5</span>, <span class="attr">column</span>: <span class="number">6</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The start and end properties both refer to the current parse position. The offset property contains an offset as a zero-based index and line and column properties contain a line and a column as one-based indices.</p>
+<p>The code inside the predicate can also access options passed to the parser using the options variable.</p>
+<p>Note that curly braces in the predicate code must be balanced.</p>
+<h5 id="expression-5"><a href="#expression-5" class="headerlink" title="$ expression"></a><code>$ expression</code></h5><p>Try to match the expression. If the match succeeds, return the matched text instead of the match result.</p>
+<h5 id="label-expression"><a href="#label-expression" class="headerlink" title="label : expression"></a><code>label : expression</code></h5><p>Match the expression and remember its match result under given label. The label must be a JavaScript identifier.</p>
+<p>Labeled expressions are useful together with actions, where saved match results can be accessed by action’s JavaScript code.</p>
+<h5 id="expression1-expression2-expressionn"><a href="#expression1-expression2-expressionn" class="headerlink" title="expression1 expression2 ... expressionn"></a><code>expression1 expression2 ... expressionn</code></h5><p>Match a sequence of expressions and return their match results in an array.</p>
+<h5 id="expression-action"><a href="#expression-action" class="headerlink" title="expression { action }"></a><code>expression { action }</code></h5><p>Match the expression. If the match is successful, run the action, otherwise consider the match failed.</p>
+<p>The action is a piece of JavaScript code that is executed as if it was inside a function. It gets the match results of labeled expressions in preceding expression as its arguments. The action should return some JavaScript value using the return statement. This value is considered match result of the preceding expression.</p>
+<p>To indicate an error, the code inside the action can invoke the expected function, which makes the parser throw an exception. The function takes two parameters — a description of what was expected at the current position and optional location information (the default is what location would return — see below). The description will be used as part of a message of the thrown exception.</p>
+<p>The code inside an action can also invoke the error function, which also makes the parser throw an exception. The function takes two parameters — an error message and optional location information (the default is what location would return — see below). The message will be used by the thrown exception.</p>
+<p>The code inside the action can access all variables and functions defined in the initializer at the beginning of the grammar. Curly braces in the action code must be balanced.</p>
+<p>The code inside the action can also access the text matched by the expression using the text function.</p>
+<p>The code inside the action can also access location information using the location function. It returns an object like this:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  start: &#123; <span class="attr">offset</span>: <span class="number">23</span>, <span class="attr">line</span>: <span class="number">5</span>, <span class="attr">column</span>: <span class="number">6</span> &#125;,</span><br><span class="line">  end:   &#123; <span class="attr">offset</span>: <span class="number">25</span>, <span class="attr">line</span>: <span class="number">5</span>, <span class="attr">column</span>: <span class="number">8</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>The start property refers to the position at the beginning of the expression, the end property refers to position after the end of the expression. The offset property contains an offset as a zero-based index and line and column properties contain a line and a column as one-based indices.</p>
+<p>The code inside the action can also access options passed to the parser using the options variable.</p>
+<p>Note that curly braces in the action code must be balanced.</p>
+<h5 id="expression1-expression2-expressionn-1"><a href="#expression1-expression2-expressionn-1" class="headerlink" title="expression1 / expression2 / ... / expressionn"></a><code>expression1 / expression2 / ... / expressionn</code></h5><p>Try to match the first expression, if it does not succeed, try the second one, etc. Return the match result of the first successfully matched expression. If no expression matches, consider the match failed.</p>
+<h2 id="Compatibility"><a href="#Compatibility" class="headerlink" title="Compatibility"></a>Compatibility</h2><p>Both the parser generator and generated parsers should run well in the following environments:</p>
+<ul>
+<li>Node.js 0.10.0+</li>
+<li>Internet Explorer 8+</li>
+<li>Edge</li>
+<li>Firefox</li>
+<li>Chrome</li>
+<li>Safari</li>
+<li>Opera</li>
+</ul>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://www.wangming.co">wangming</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://www.wangming.co/2018/11/15/pegjs-document/">http://www.wangming.co/2018/11/15/pegjs-document/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2018/11/17/agent-mock/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">通过Java Agent的redefineClasses实现Mock功能</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+  </nav>
+
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:co.wangming@hotmail.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+          <a href="https://github.com/wangmingco" class="iconfont icon-github" title="github"></a>
+        
+      
+    
+      
+        
+          <a href="https://weibo.com/6875692476" class="iconfont icon-weibo" title="weibo"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.zhihu.com/people/wangmingco/activities" class="iconfont icon-zhihu" title="zhihu"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.douban.com/people/xxxyy/" class="iconfont icon-douban" title="douban"></a>
+        
+      
+    
+      
+        
+          <a href="https://www.jianshu.com/u/49227b2e1efc" class="iconfont icon-pocket" title="pocket"></a>
+        
+      
+    
+      
+    
+      
+    
+
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+    
+    2018
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wangming</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+  
+
+  
+
+
+
+    
+  
+
+
+
+  
+  
+
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/fancybox/jquery.fancybox.pack.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/pjax/jquery.pjax.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/nprogress/nprogress.min.js"></script>
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.10.1"></script>
+
+  </body>
+</html>
