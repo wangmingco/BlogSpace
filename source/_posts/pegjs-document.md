@@ -14,22 +14,6 @@ PEG.js具有如下特性
 * Based on parsing expression grammar formalism — more powerful than traditional LL(k) and LR(k) parsers. 基于parsing expression grammar, 比传统的 LL(k) 和 LR(k) parser更加强大.
 * Usable from your browser, from the command line, or via JavaScript API. 适用于浏览器, 命令行或者JavaScript API 等多种环境.
 
-# Table of Contents
-Installation
-* Node.js
-* Browser
-
-Generating a Parser
-* Command Line
-* JavaScript API
-
-Using the Parser
-
-Grammar Syntax and Semantics
-* Parsing Expression Types
-
-Compatibility
-
 ## Installation
 
 ## Node.js
@@ -76,24 +60,25 @@ By default, the generated parser is in the Node.js module format. You can overri
 You can tweak the generated parser with several options:
 你可以通过如下几个命令来修改生成的parser的默认行为.
 
-* --allowed-start-rules: Comma-separated list of rules the parser will be allowed to start parsing from (default: the first rule in the grammar).
-* --cache
+* `--allowed-start-rules`: Comma-separated list of rules the parser will be allowed to start parsing from (default: the first rule in the grammar).
+
+* `--cache`: 开启parser的缓存功能. 在这种情况下, parser会将parse出来的结果缓存起来, 避免极端情况下解析时间成指数级增加, 但是坏处是parser可能会变慢.
 Makes the parser cache results, avoiding exponential parsing time in pathological cases but making the parser slower.
-* --dependency
+* `--dependency`: 让parser依赖一个指定的依赖.(该参数可以多次使用)
 Makes the parser require a specified dependency (can be specified multiple times).
-* --export-var
+* `--export-var`: 
 Name of a global variable into which the parser object is assigned to when no module loader is detected.
-* --extra-options
+* `--extra-options`: 传递给`peg.generate`的额外参数(JSON 形式).
 Additional options (in JSON format) to pass to peg.generate.
-* --extra-options-file
+* `--extra-options-file`: 传递给`peg.generate`的额外参数文件(JSON 形式).
 File with additional options (in JSON format) to pass to peg.generate.
-* --format
+* `--format`: 生成的parser格式, 可选值有`amd`, `commonjs`, `globals`, `umd`(默认是`commonjs`)
 Format of the generated parser: amd, commonjs, globals, umd (default: commonjs).
-* --optimize
+* `--optimize`: 为生成的parser在parsing时的优化方式, 可以选择解析速度(`speed`)或者parse结果代码大小(`size`). (默认是`speed`)
 Selects between optimizing the generated parser for parsing speed (speed) or code size (size) (default: speed)
-* --plugin
+* `--plugin`: 为PEG.js配置插件(可以配置多个, 即多次配置)
 Makes PEG.js use a specified plugin (can be specified multiple times).
-* --trace
+* `--trace`: 开启parser的trace功能.
 Makes the parser trace its progress.
 
 ### JavaScript API
@@ -239,38 +224,46 @@ In our arithmetics example, there are many parser actions. Consider the action i
 ### Parsing Expression Types
 There are several types of parsing expressions, some of them containing subexpressions and thus forming a recursive structure:
 
-##### "literal"
-##### 'literal'
+解析表达式可以分为很多种类, 而且有一些还包含子表达式, 包含子表达式的就形成了一种递归结构.
+
+##### `"literal"`
+##### `'literal'`
 Match exact literal string and return it. The string syntax is the same as in JavaScript. Appending i right after the literal makes the match case-insensitive.
 
-##### .
+严格匹配字面量字符串, 然后直接返回该字符串字面量. 在pegjs里字符串语法和JavaScript里相同. 在常量最后加一个`i`表示不区分大小写.
+
+##### `.`
 Match exactly one character and return it as a string.
 
-##### [characters]
+严格匹配一个字符, 然后将它作为一个字符串返回.
+
+##### `[characters]`
 Match one character from a set and return it as a string. The characters in the list can be escaped in exactly the same way as in JavaScript string. The list of characters can also contain ranges (e.g. [a-z] means “all lowercase letters”). Preceding the characters with ^ inverts the matched set (e.g. [^a-z] means “all character but lowercase letters”). Appending i right after the literal makes the match case-insensitive.
 
-##### rule
+
+
+##### `rule`
 Match a parsing expression of a rule recursively and return its match result.
 
-##### ( expression )
+##### `( expression )`
 Match a subexpression and return its match result.
 
-##### expression *
+##### `expression *`
 Match zero or more repetitions of the expression and return their match results in an array. The matching is greedy, i.e. the parser tries to match the expression as many times as possible. Unlike in regular expressions, there is no backtracking.
 
-##### expression +
+##### `expression +`
 Match one or more repetitions of the expression and return their match results in an array. The matching is greedy, i.e. the parser tries to match the expression as many times as possible. Unlike in regular expressions, there is no backtracking.
 
-##### expression ?
+##### `expression ?`
 Try to match the expression. If the match succeeds, return its match result, otherwise return null. Unlike in regular expressions, there is no backtracking.
 
-##### & expression
+##### `& expression`
 Try to match the expression. If the match succeeds, just return undefined and do not consume any input, otherwise consider the match failed.
 
-##### ! expression
+##### `! expression`
 Try to match the expression. If the match does not succeed, just return undefined and do not consume any input, otherwise consider the match failed.
 
-##### & { predicate }
+##### `& { predicate }`
 The predicate is a piece of JavaScript code that is executed as if it was inside a function. It gets the match results of labeled expressions in preceding expression as its arguments. It should return some JavaScript value using the return statement. If the returned value evaluates to true in boolean context, just return undefined and do not consume any input; otherwise consider the match failed.
 
 The code inside the predicate can access all variables and functions defined in the initializer at the beginning of the grammar.
@@ -288,7 +281,7 @@ The code inside the predicate can also access options passed to the parser using
 
 Note that curly braces in the predicate code must be balanced.
 
-##### ! { predicate }
+##### `! { predicate }`
 The predicate is a piece of JavaScript code that is executed as if it was inside a function. It gets the match results of labeled expressions in preceding expression as its arguments. It should return some JavaScript value using the return statement. If the returned value evaluates to false in boolean context, just return undefined and do not consume any input; otherwise consider the match failed.
 
 The code inside the predicate can access all variables and functions defined in the initializer at the beginning of the grammar.
@@ -308,18 +301,18 @@ The code inside the predicate can also access options passed to the parser using
 
 Note that curly braces in the predicate code must be balanced.
 
-##### $ expression
+##### `$ expression`
 Try to match the expression. If the match succeeds, return the matched text instead of the match result.
 
-##### label : expression
+##### `label : expression`
 Match the expression and remember its match result under given label. The label must be a JavaScript identifier.
 
 Labeled expressions are useful together with actions, where saved match results can be accessed by action's JavaScript code.
 
-##### expression1 expression2 ... expressionn
+##### `expression1 expression2 ... expressionn`
 Match a sequence of expressions and return their match results in an array.
 
-##### expression { action }
+##### `expression { action }`
 Match the expression. If the match is successful, run the action, otherwise consider the match failed.
 
 The action is a piece of JavaScript code that is executed as if it was inside a function. It gets the match results of labeled expressions in preceding expression as its arguments. The action should return some JavaScript value using the return statement. This value is considered match result of the preceding expression.
@@ -346,7 +339,7 @@ The code inside the action can also access options passed to the parser using th
 
 Note that curly braces in the action code must be balanced.
 
-##### expression1 / expression2 / ... / expressionn
+##### `expression1 / expression2 / ... / expressionn`
 Try to match the first expression, if it does not succeed, try the second one, etc. Return the match result of the first successfully matched expression. If no expression matches, consider the match failed.
 
 ## Compatibility
