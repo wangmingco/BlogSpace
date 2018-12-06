@@ -2,22 +2,33 @@
 title: PEG.js Documentation
 date: 2018-11-15 21:21:00
 ---
+PEG.js is a simple parser generator for JavaScript that produces fast parsers with excellent error reporting. You can use it to process complex data or computer languages and build transformers, interpreters, compilers and other tools easily.
+
+PEG.js是JavaScript里一个简单的parser生成器, 它能够非常快的生成parser, 而且如果在生成过程中遇到了问题, 也会给出非常明确的错误报告. 你可以很轻松地用它处理复杂的数据结构或者计算机语言, 也可以构建出transformers, interpreters, compilers 等其他工具.
+
+## Features
+PEG.js具有如下特性
+* Simple and expressive grammar syntax. 简单而富有表现力的语法
+* Integrates both lexical and syntactical analysis. 集成了词法和语法分析.
+* Parsers have excellent error reporting out of the box . 生成的解析器具有出色的错误报告功能
+* Based on parsing expression grammar formalism — more powerful than traditional LL(k) and LR(k) parsers. 基于parsing expression grammar, 比传统的 LL(k) 和 LR(k) parser更加强大.
+* Usable from your browser, from the command line, or via JavaScript API. 适用于浏览器, 命令行或者JavaScript API 等多种环境.
 
 # Table of Contents
-#### Installation
+Installation
 * Node.js
 * Browser
 
-#### Generating a Parser
+Generating a Parser
 * Command Line
 * JavaScript API
 
-#### Using the Parser
+Using the Parser
 
-#### Grammar Syntax and Semantics
+Grammar Syntax and Semantics
 * Parsing Expression Types
 
-#### Compatibility
+Compatibility
 
 ## Installation
 
@@ -148,8 +159,9 @@ Parsers 也可以自定义参数, 以支持定制化的需求.
 The grammar syntax is similar to JavaScript in that it is not line-oriented and ignores whitespace between tokens. You can also use JavaScript-style comments (// ... and /* ... */).
 Let's look at example grammar that recognizes simple arithmetic expressions like 2*(3+4). A parser generated from this grammar computes their values.
 
-peg.js的语法和JavaScript非常像, 但是有俩点不同, pegjs不是line-oriented, 而且peg.js会忽略tokens之间的空白符. 你可以在peg.js文法文件中使用`//...`和`/* ... */`注释
-下来有个peg.js文法示例, 该示例生成的parser会识别出算数表达式 `2*(3+4)`, 然后将该值计算出来.
+peg.js的语法和JavaScript非常像, 但是有俩点不同, pegjs不是line-oriented, 而且peg.js会忽略tokens之间的空白符. 统同样地你可以在peg.js文法文件中使用`//...`和`/* ... */`注释
+
+下面是个peg.js文法示例, 该示例生成的parser会识别出算数表达式 `2*(3+4)`, 然后将该值计算出来.
 
 ```javascript
 start
@@ -173,9 +185,15 @@ integer "integer"
 
 On the top level, the grammar consists of rules (in our example, there are five of them). Each rule has a name (e.g. integer) that identifies the rule, and a parsing expression (e.g. digits:[0-9]+ { return parseInt(digits.join(""), 10); }) that defines a pattern to match against the input text and possibly contains some JavaScript code that determines what happens when the pattern matches successfully. A rule can also contain human-readable name that is used in error messages (in our example, only the integer rule has a human-readable name). The parsing starts at the first rule, which is also called the start rule.
 
-A rule name must be a JavaScript identifier. It is followed by an equality sign (“=”) and a parsing expression. If the rule has a human-readable name, it is written as a JavaScript string between the name and separating equality sign. Rules need to be separated only by whitespace (their beginning is easily recognizable), but a semicolon (“;”) after the parsing expression is allowed.
+从总体上来说, 文法是由rule组成的.每个rule都有一个名字(例如上例中的:`integer`) 和 一个解析表达式(例如上例中的:`digits:[0-9]+ { return parseInt(digits.join(""), 10); }`), 该表达式主要由俩部分组成, 匹配输入字符串的表达式规则和 匹配成功之后要执行的JavaScript代码. rule也可以设置一个对人类比较可读的名称, 例如上例中的integer就有一个别名, 该别名主要用于发生解析异常时, 输出日志便于解决问题. 解析动作从第一个rule开始, 我们通常以`start`命名这个rule.
+
+A rule name must be a JavaScript identifier. It is followed by an equality sign (“=”) and a parsing expression. If the rule has a human-readable name, it is written as a JavaScript string between the name and separating equality sign. Rules need to be separated only by whitespace (their beginning is easily recognizable), but a semicolon (“;”) after the parsing expression is allowed. 
+
+rule名称必须符合JavaScript的标识符规则. rule名称后跟一个`=`符号, 该符号后跟一个解析表达式. 如果rule名称要跟一个别名的话, 该别名必须在rule名称与`=`之间. rule之间需要由空白符进行分割, rule后也可以跟一个分号`;`
 
 The first rule can be preceded by an initializer — a piece of JavaScript code in curly braces (“{” and “}”). This code is executed before the generated parser starts parsing. All variables and functions defined in the initializer are accessible in rule actions and semantic predicates. The code inside the initializer can access options passed to the parser using the options variable. Curly braces in the initializer code must be balanced. Let's look at the example grammar from above using a simple initializer.
+
+在第一个规则之前可以包含一段初始化JavaScript代码, 这段JavaScript代码必须被包含在花括号("{"和"}")里. 这段初始化代码会在parser开始解析之前被执行. 初始化代码块里面的变量和方法可以被后续的rule访问到. 初始化代码可以通过访问`options`参数访问到传递给parser的参数. Curly braces in the initializer code must be balanced. 下面我们看一个简单的使用了初始化代码的示例:
 
 ```javascript
 {
@@ -204,6 +222,8 @@ integer "integer"
 ```
 
 The parsing expressions of the rules are used to match the input text to the grammar. There are various types of expressions — matching characters or character classes, indicating optional parts and repetition, etc. Expressions can also contain references to other rules. See detailed description below.
+
+
 
 If an expression successfully matches a part of the text when running the generated parser, it produces a match result, which is a JavaScript value. For example:
 
