@@ -40,7 +40,7 @@
 
 
 
-<link rel="canonical" href="http://www.wangming.co/2018/12/13/pegjs-document/">
+<link rel="canonical" href="http://www.wangming.co/2018/12/15/pegjs-document/">
 
 
 
@@ -210,7 +210,7 @@
 
       <div class="post-meta">
         <span class="post-time">
-          2018-12-13
+          2018-12-15
         </span>
         
         
@@ -245,12 +245,12 @@
     </em> Integrates both lexical and syntactical analysis. <br><br>    <em> Parsers have excellent error reporting out of the box . <br>
     </em> Based on parsing expression grammar formalism — more powerful than traditional LL(k) and LR(k) parsers. <br><br>    * Usable from your browser, from the command line, or via JavaScript API. <br><br>    </p><br></details>
 
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h3><p>要使用<code>pegjs</code>命令的话, 需要使用全局模式安装<code>PEG.js</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g pegjs</span><br></pre></td></tr></table></figure></p>
-<p>要使用<code>JavaScript API</code>, 需要使用<code>locally</code>模式安装 <code>PEG.js</code> :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install pegjs</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h3><p>在命令行中使用<code>pegjs</code>命令编译, 需要使用全局模式安装<code>PEG.js</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g pegjs</span><br></pre></td></tr></table></figure></p>
+<p>如果要使用pegjs提供的 JavaScript API, 则需要在当前工作目录安装 <code>PEG.js</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install pegjs</span><br></pre></td></tr></table></figure></p>
 <p>如果既要使用<code>pegjs</code>命令又要使用JavaScript API, 那么你需要将上面俩种方式都安装一遍.</p>
 <a id="more"></a>
-<h3 id="Browser"><a href="#Browser" class="headerlink" title="Browser"></a>Browser</h3><p>通过<code>Bower</code>安装 <code>PEG.js</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bower install pegjs</span><br></pre></td></tr></table></figure></p>
-<h2 id="生成-Parser"><a href="#生成-Parser" class="headerlink" title="生成 Parser"></a>生成 Parser</h2><p><code>PEG.js</code>根据一个grammar生成parser, 我们可以描述这个grammar希望获得怎么样的输入以及指定parser返回的内容(using semantic actions on matched parts of the input). 通过一个简单api就可以可以生成一个parser JS对象.</p>
+<h3 id="Browser"><a href="#Browser" class="headerlink" title="Browser"></a>Browser</h3><p>在浏览器中使用, 可以直接下载库文件<a href="https://pegjs.org/#download" target="_blank" rel="noopener">PEG.js</a>或者通过<code>Bower</code>安装<code>PEG.js</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bower install pegjs</span><br></pre></td></tr></table></figure></p>
+<h2 id="生成-Parser"><a href="#生成-Parser" class="headerlink" title="生成 Parser"></a>生成 Parser</h2><p><code>PEG.js</code>将解析表达式文法解析后, 生成parser. 解析表达式文法描述描述了 将何种输入进行解析然后输出何种输出.(通过执行输入字符的匹配部分的语义操作). 通过一个简单api就可以可以生成一个parser JS对象.</p>
 <details><br>    <summary>原文</summary><br>    <p><br>  PEG.js generates parser from a grammar that describes expected input and can specify what the parser returns (using semantic actions on matched parts of the input). Generated parser itself is a JavaScript object with a simple API.<br>    </p><br></details>
 
 <h3 id="命令行生成"><a href="#命令行生成" class="headerlink" title="命令行生成"></a>命令行生成</h3><p>想要将grammar文件生成parser, 直接使用<code>pegjs</code>进行编译即可:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pegjs arithmetics.pegjs</span><br></pre></td></tr></table></figure></p>
@@ -258,16 +258,12 @@
 <details><br>    <summary>原文</summary><br>    <p><br>  This writes parser source code into a file with the same name as the grammar file but with “.js” extension. You can also specify the output file explicitly:<br>    </p><br></details>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pegjs -o arithmetics-parser.js arithmetics.pegjs</span><br></pre></td></tr></table></figure>
-<p>If you omit both input and output file, standard <a href="">input</a> and output are used.</p>
-<blockquote>
-<p>TODO 但是如果你将输入输出文件都忽略了, 那么系统将会采用标准输入输出.</p>
-</blockquote>
-<p>在默认设置下, 生成的parser代码是以Node.js module format 进行组织代码的, 但也可以通过指定<code>--format</code>选项选择其他方式.</p>
+<p>但是如果你将输入输出文件都忽略了, 那么系统将会采用标准输入输出.<br>在默认设置下, 生成的parser代码是以Node.js module format 进行组织代码的, 但也可以通过指定<code>--format</code>选项选择其他方式.</p>
 <blockquote>
 <p>下面的选项介绍中也有对该选项的介绍, 详情请参考<a href="https://75team.com/post/%E8%AF%91%E7%A5%9E%E9%A9%AC%E6%98%AFamd-commonjs-umd.html" target="_blank" rel="noopener">[译]神马是AMD, CommonJS, UMD?</a></p>
 </blockquote>
 <p>你可以通过如下几个命令来修改生成的parser的默认行为.</p>
-<details><br>    <summary>原文</summary><br>  By default, the generated parser is in the Node.js module format. You can override this using the * –format option.<br><br>  You can tweak the generated parser with several options:<br>    <p><br>    </p><br></details>
+<details><br>    <summary>原文</summary><br>    If you omit both input and output file, standard <a href="">input</a> and output are used.<br><br>  By default, the generated parser is in the Node.js module format. You can override this using the * –format option.<br><br>  You can tweak the generated parser with several options:<br>    <p><br>    </p><br></details>
 
 <ul>
 <li><code>--allowed-start-rules</code>: 指定parser开始从哪个rule开始解析. (默认是文法中的第一个rule)</li>
@@ -478,7 +474,7 @@
     </p>
     <p class="copyright-item">
       <span>原文链接: </span>
-      <a href="http://www.wangming.co/2018/12/13/pegjs-document/">http://www.wangming.co/2018/12/13/pegjs-document/</a>
+      <a href="http://www.wangming.co/2018/12/15/pegjs-document/">http://www.wangming.co/2018/12/15/pegjs-document/</a>
     </p>
     <p class="copyright-item">
       <span>许可协议: </span>
@@ -501,8 +497,8 @@
   <nav class="post-nav">
     
     
-      <a class="next" href="/2018/12/03/work-knife/">
-        <span class="next-text nav-default">工作/生活中用到的软件/插件/小工具</span>
+      <a class="next" href="/2018/11/18/distributed-id/">
+        <span class="next-text nav-default">高并发无锁无IO等待分布式ID生成方案</span>
         <span class="prev-text nav-mobile">下一篇</span>
         <i class="iconfont icon-right"></i>
       </a>
