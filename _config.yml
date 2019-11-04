@@ -79,6 +79,6 @@ theme: even
 ## Docs: https://hexo.io/docs/deployment.html
 deploy: 
   type: git
-  repo: https://github.com/wangmingco/BlogSpace.git
-  branch: master
+  repo: git@github.com:wangmingco/BlogSpace.git
+  branch: gh-pages
   message: "commit blog"
