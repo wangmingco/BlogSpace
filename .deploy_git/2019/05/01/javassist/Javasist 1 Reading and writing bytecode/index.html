@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Javasist Reading and writing bytecode | 向南</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Javassist is a class library for dealing with Java bytecode. Java bytecode is stored in a binary file called a class file. Each class file contains one Java class or interface. Javassist 是一个用于处理 Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Javasist Reading and writing bytecode">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.wangming.co&#x2F;2019&#x2F;05&#x2F;01&#x2F;javassist&#x2F;Javasist%201%20Reading%20and%20writing%20bytecode&#x2F;index.html">
+<meta property="og:site_name" content="向南">
+<meta property="og:description" content="Javassist is a class library for dealing with Java bytecode. Java bytecode is stored in a binary file called a class file. Each class file contains one Java class or interface. Javassist 是一个用于处理 Java">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-04T05:49:02.504Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="向南" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">向南</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.wangming.co"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-javassist/Javasist 1 Reading and writing bytecode" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/05/01/javassist/Javasist%201%20Reading%20and%20writing%20bytecode/" class="article-date">
+  <time datetime="2019-05-01T12:15:00.000Z" itemprop="datePublished">2019-05-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Javasist Reading and writing bytecode
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><code>Javassist</code> is a class library for dealing with Java bytecode. Java bytecode is stored in a binary file called a class file. Each class file contains one Java class or interface.</p>
+<p><code>Javassist</code> 是一个用于处理 Java 字节码的类库, Java 字节码被存储在一个后缀为 class 的二进制文件中. 每个 class 文件包含一个 Java 类或者 Java 接口.</p>
+<p>The class Javassist.CtClass is an abstract representation of a class file. A CtClass (compile-time class) object is a handle for dealing with a class file. The following program is a very simple example:</p>
+<p><code>Javassist.CtClass</code> 类是对 class 文件的一个抽象表示. 一个 <code>CtClass</code> (compile-time class) 对象处理一个 class 文件. 下面的程序是一个非常简单的示例:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ClassPool pool = ClassPool.getDefault();</span><br><span class="line">CtClass cc = pool.get(<span class="string">"test.Rectangle"</span>);</span><br><span class="line">cc.setSuperclass(pool.get(<span class="string">"test.Point"</span>));</span><br><span class="line">cc.writeFile();</span><br></pre></td></tr></table></figure>
+
+<p>This program first obtains a ClassPool object, which controls bytecode modification with Javassist. The ClassPool object is a container of CtClass object representing a class file. It reads a class file on demand for constructing a CtClass object and records the constructed object for responding later accesses. To modify the definition of a class, the users must first obtain from a ClassPool object a reference to a CtClass object representing that class. get() in ClassPool is used for this purpose. In the case of the program shown above, the CtClass object representing a class test.Rectangle is obtained from the ClassPool object and it is assigned to a variable cc. The ClassPool object returned by getDefault() searches the default system search path.</p>
+<p>这个程序首先获得了一个<code>ClassPool</code>对象, 该对象在 Javassist 中用于控制字节码的修改. <code>ClassPool</code> 对象是一个 <code>CtClass</code>对象的容器. <code>ClassPool</code>将读取的class文件构建出<code>CtClass</code>对象, 同时将构建出来的对象缓存起来, 以便后期访问. <code>ClassPool</code>的<code>get()</code>方法正是出于上述目的. 在上面的代码中, 从<code>ClassPool</code>得到的<code>CtClass</code>对象表示的是一个<code>test.Rectangle</code>对象, 然后将该对象分配给了一个变量<code>cc</code>. <code>getDefault()</code>方法会从默认的系统搜索路径中进行搜索, 然后返回<code>ClassPool</code>对象.</p>
+<p>From the implementation viewpoint, ClassPool is a hash table of CtClass objects, which uses the class names as keys. get() in ClassPool searches this hash table to find a CtClass object associated with the specified key. If such a CtClass object is not found, get() reads a class file to construct a new CtClass object, which is recorded in the hash table and then returned as the resulting value of get().</p>
+<p>从实现上来说, <code>ClassPool</code>是一个<code>CtClass</code>对象的哈希表, 将class的名称作为key. <code>ClassPool</code>中的 <code>get()</code> 方法会根据指定的key对整个哈希表进行搜索找到一个<code>CtClass</code>对象. 如果搜索不到的话, <code>get()</code>方法会尝试读取class文件, 然后构造出一个新的<code>CtClass</code>对象, 将新的<code>CtClass</code>对象缓存后, 再返回出去.</p>
+<p>The CtClass object obtained from a ClassPool object can be modified (details of how to modify a CtClass will be presented later). In the example above, it is modified so that the superclass of test.Rectangle is changed into a class test.Point. This change is reflected on the original class file when writeFile() in CtClass() is finally called.</p>
+<p>从<code>ClassPool</code>中拿到的<code>CtClass</code>对象可以对其进行修改(修改<code>CtClass</code>的细节会在后续的文章中讲解). 在上面的例子中, 通过<code>CtClass</code>的修改就将<code>test.Rectangle</code>的父类修改了<code>test.Point</code>. 如果我们调用了<code>CtClass</code>的<code>writeFile()</code>方法, 这个修改也对原先的class文件生效了.</p>
+<p>writeFile() translates the CtClass object into a class file and writes it on a local disk. Javassist also provides a method for directly obtaining the modified bytecode. To obtain the bytecode, call toBytecode():</p>
+<p><code>writeFile()</code>将<code>CtClass</code>对象转换成一个class文件, 然后将该文件写到本地磁盘上. Javassist还提供了用于直接获得修改后的字节码的方法-<code>toBytecode()</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">byte</span>[] b = cc.toBytecode();</span><br></pre></td></tr></table></figure>
+
+<p>You can directly load the CtClass as well:</p>
+<p>你也可以直接将Class加载进去.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class clazz = cc.toClass();</span><br></pre></td></tr></table></figure>
+
+<p>toClass() requests the context class loader for the current thread to load the class file represented by the CtClass. It returns a java.lang.Class object representing the loaded class. For more details, please see this section below.</p>
+<p><code>toClass()</code>方法 会使用当前线程的context class loader将<code>CtClass</code>内的字节码加载进JVM里, 然后返回一个<code>java.lang.Class</code>对象.</p>
+<h2 id="Defining-a-new-class"><a href="#Defining-a-new-class" class="headerlink" title="Defining a new class"></a>Defining a new class</h2><p>To define a new class from scratch, makeClass() must be called on a ClassPool.</p>
+<p>从头开始定义一个新的class, 必须调用<code>ClassPool</code>的<code>makeClass()</code> 方法.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ClassPool pool = ClassPool.getDefault();</span><br><span class="line">CtClass cc = pool.makeClass(<span class="string">"Point"</span>);</span><br></pre></td></tr></table></figure>
+<p>This program defines a class Point including no members. Member methods of Point can be created with factory methods declared in CtNewMethod and appended to Point with addMethod() in CtClass.</p>
+<p>上面的程序定义了一个没有任何成员的名称为<code>Point</code>的class. 可以通过<code>CtNewMethod</code>里声明的一些工厂方法为<code>Point</code>类生成一些方法, 然后通过调用<code>CtClass</code>的<code>addMethod()</code>方法, 将这些新生成的方法加到<code>Point</code>class里面去.</p>
+<p>makeClass() cannot create a new interface; makeInterface() in ClassPool can do. Member methods in an interface can be created with abstractMethod() in CtNewMethod. Note that an interface method is an abstract method.</p>
+<p><code>makeClass()</code> 不能创建新的接口, 但是可以使用<code>ClassPool</code>中的<code>makeInterface()</code>创建一个新的接口. 接口中的方法可以使用<code>CtNewMethod</code>的<code>abstractMethod()</code>方法创建出来. 注意, 一个接口方法就是一个抽象方法.</p>
+<h2 id="Frozen-classes"><a href="#Frozen-classes" class="headerlink" title="Frozen classes"></a>Frozen classes</h2><p>If a CtClass object is converted into a class file by writeFile(), toClass(), or toBytecode(), Javassist freezes that CtClass object. Further modifications of that CtClass object are not permitted. This is for warning the developers when they attempt to modify a class file that has been already loaded since the JVM does not allow reloading a class.</p>
+<p>如果<code>CtClass</code>对象通过<code>writeFile(), toClass(), or toBytecode()</code>等方式转换成一个class文件, Javassist会将<code>CtClass</code>对象冻结. 被冻结的<code>CtClass</code>对象不允许再次修改. 这是为了警告开发者, 他们尝试修改一个已经被load的class文件, 而JVM不允许重新加载class.</p>
+<p>A frozen CtClass can be defrost so that modifications of the class definition will be permitted. For example,</p>
+<p>被冻结的<code>CtClass</code>也可以进行解冻, 解冻之后就可以继续就那些修改了, 例如:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CtClasss cc = ...;</span><br><span class="line">    :</span><br><span class="line">cc.writeFile();</span><br><span class="line">cc.defrost();</span><br><span class="line">cc.setSuperclass(...);    <span class="comment">// OK since the class is not frozen.</span></span><br></pre></td></tr></table></figure>
+
+<p>After defrost() is called, the CtClass object can be modified again.</p>
+<p>当<code>defrost()</code>方法被调用之后, <code>CtClass</code>就可以再次修改了.</p>
+<p>If ClassPool.doPruning is set to true, then Javassist prunes the data structure contained in a CtClass object when Javassist freezes that object. To reduce memory consumption, pruning discards unnecessary attributes (attribute_info structures) in that object. For example, Code_attribute structures (method bodies) are discarded. Thus, after a CtClass object is pruned, the bytecode of a method is not accessible except method names, signatures, and annotations. The pruned CtClass object cannot be defrost again. The default value of ClassPool.doPruning is false.</p>
+<p>如果<code>ClassPool.doPruning</code>被设置为true的话, 当Javassist冻结<code>CtClass</code>对象的时候, 会对其内部的数据结构进行精简. 为了减少内存消耗, pruning精简了<code>attribute_info</code>结构里不必要的属性. 例如方法体里面的<code>Code_attribute</code>结构就会被舍弃掉. 因此一旦<code>CtClass</code>对象被精简之后, 方法除了名称, 签名, 注解等其他信息都不可再被访问到. 而且被精简过后的<code>CtClass</code>对象也不可以再被解冻. <code>ClassPool.doPruning</code>默认值是false.</p>
+<p>To disallow pruning a particular CtClass, stopPruning() must be called on that object in advance:</p>
+<p>如果将要设置某个特殊的<code>CtClass</code>不允许精简, 必选提前调用<code>CtClasss</code>对象的<code>stopPruning()</code>方法.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CtClasss cc = ...;</span><br><span class="line">cc.stopPruning(<span class="keyword">true</span>);</span><br><span class="line">    :</span><br><span class="line">cc.writeFile();                             <span class="comment">// convert to a class file.</span></span><br><span class="line"><span class="comment">// cc is not pruned.</span></span><br></pre></td></tr></table></figure>
+
+<p>The CtClass object cc is not pruned. Thus it can be defrost after writeFile() is called.</p>
+<p>上面<code>CtClass</code>对象没有被精简, 因此当它调用了<code>writeFile()</code>方法之后, 还可以被解冻.</p>
+<blockquote>
+<p>Note: While debugging, you might want to temporarily stop pruning and freezing and write a modified class file to a disk drive. debugWriteFile() is a convenient method for that purpose. It stops pruning, writes a class file, defrosts it, and turns pruning on again (if it was initially on).</p>
+</blockquote>
+<blockquote>
+<p>注意: 在调试阶段, 你也许想要临时地停止精简和冻结操作, 然后将一个修改过的class文件写到磁盘中, 此时你可以调用<code>debugWriteFile()</code>方法. 它首先停止精简操作, 然后对class文件执行写入操作, 最后再解冻, 最后回复精简状态.</p>
+</blockquote>
+<h2 id="Class-search-path"><a href="#Class-search-path" class="headerlink" title="Class search path"></a>Class search path</h2><p>The default ClassPool returned by a static method ClassPool.getDefault() searches the same path that the underlying JVM (Java virtual machine) has. If a program is running on a web application server such as JBoss and Tomcat, the ClassPool object may not be able to find user classes since such a web application server uses multiple class loaders as well as the system class loader. In that case, an additional class path must be registered to the ClassPool. Suppose that pool refers to a ClassPool object:</p>
+<p><code>ClassPool.getDefault()</code>返回的默认的<code>ClassPool</code>是基于JVM的path上面搜索得到的. 如果应用程序是运行在一个web应用服务器上(例如JBoss或者Tomcat), <code>ClassPool</code>对象可能会找不到用户定义的class, 因为web应用服务器可能会使用多个class Loader. 在这种情况下可以向<code>ClassPool</code>上注册一个新的class path.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pool.insertClassPath(<span class="keyword">new</span> ClassClassPath(<span class="keyword">this</span>.getClass()));</span><br></pre></td></tr></table></figure>
+
+<p>This statement registers the class path that was used for loading the class of the object that this refers to. You can use any Class object as an argument instead of this.getClass(). The class path used for loading the class represented by that Class object is registered.</p>
+<p>You can register a directory name as the class search path. For example, the following code adds a directory /usr/local/javalib to the search path:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ClassPool pool = ClassPool.getDefault();</span><br><span class="line">pool.insertClassPath(<span class="string">"/usr/local/javalib"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>The search path that the users can add is not only a directory but also a URL:</p>
+<p>用户能添加的search path不仅仅是目录, 还可以添加URL:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ClassPool pool = ClassPool.getDefault();</span><br><span class="line">ClassPath cp = <span class="keyword">new</span> URLClassPath(<span class="string">"www.javassist.org"</span>, <span class="number">80</span>, <span class="string">"/java/"</span>, <span class="string">"org.javassist."</span>);</span><br><span class="line">pool.insertClassPath(cp);</span><br></pre></td></tr></table></figure>
+<p>这个应用程序添加了一个<code>http://www.javassist.org:80/java/</code>url到search path上. 只有当搜索属于<code>org.javassist</code>这个包下的类的时候, 才会去这个URL上进行搜索. 例如当加载<code>org.javassist.test.Main</code>类时, 它的class 文件将会从<code>http://www.javassist.org:80/java/org/javassist/test/Main.class</code>上进行加载.</p>
+<p>This program adds “<a href="http://www.javassist.org:80/java/&quot;" target="_blank" rel="noopener">http://www.javassist.org:80/java/&quot;</a> to the class search path. This URL is used only for searching classes belonging to a package org.javassist. For example, to load a class org.javassist.test.Main, its class file will be obtained from:</p>
+<p><a href="http://www.javassist.org:80/java/org/javassist/test/Main.class" target="_blank" rel="noopener">http://www.javassist.org:80/java/org/javassist/test/Main.class</a></p>
+<p>Furthermore, you can directly give a byte array to a ClassPool object and construct a CtClass object from that array. To do this, use ByteArrayClassPath. For example,</p>
+<p>另外, 你可以直接向<code>ClassPool</code>对象里指定一个byte数组, <code>ClassPool</code>会从这个byte数组里构建出一个<code>CtClass</code>对象. 想要使用这种方案, 可以用<code>ByteArrayClassPath</code>, 例如:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ClassPool cp = ClassPool.getDefault();</span><br><span class="line"><span class="keyword">byte</span>[] b = a <span class="keyword">byte</span> array;</span><br><span class="line">String name = <span class="class"><span class="keyword">class</span> <span class="title">name</span></span>;</span><br><span class="line">cp.insertClassPath(<span class="keyword">new</span> ByteArrayClassPath(name, b));</span><br><span class="line">CtClass cc = cp.get(name);</span><br></pre></td></tr></table></figure>
+
+<p>The obtained CtClass object represents a class defined by the class file specified by b. The ClassPool reads a class file from the given ByteArrayClassPath if get() is called and the class name given to get() is equal to one specified by name.</p>
+<p>获取到的<code>CtClass</code>对象就是从<code>b</code>数组里定义出来的. 当<code>get()</code>方法被调用的时候, <code>ClassPool</code>会从给定的<code>ByteArrayClassPath</code>里读取出一个class文件, class名称就是参数name.</p>
+<p>If you do not know the fully-qualified name of the class, then you can use makeClass() in ClassPool:<br>如果你不知道class的全限定名称, 你可以使用<code>ClassPool</code>的<code>makeClass()</code>方法.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ClassPool cp = ClassPool.getDefault();</span><br><span class="line">InputStream ins = an input stream <span class="keyword">for</span> reading a <span class="class"><span class="keyword">class</span> <span class="title">file</span></span>;</span><br><span class="line">CtClass cc = cp.makeClass(ins);</span><br></pre></td></tr></table></figure>
+
+<p>makeClass() returns the CtClass object constructed from the given input stream. You can use makeClass() for eagerly feeding class files to the ClassPool object. This might improve performance if the search path includes a large jar file. Since a ClassPool object reads a class file on demand, it might repeatedly search the whole jar file for every class file. makeClass() can be used for optimizing this search. The CtClass constructed by makeClass() is kept in the ClassPool object and the class file is never read again.</p>
+<p><code>makeClass()</code>方法会从给定的输入流里构建出一个<code>CtClass</code>对象. 你可以使用<code>makeClass()</code>方法先一步地将class文件传给给<code>ClassPool</code>对象. 如果在搜索路径里面有一个特别大的jar文件时, 这有可能提升性能. 因为<code>ClassPool</code>在后台读取class文件时, 有可能将每一个class文件都在jar文件中匹配一遍. <code>makeClass()</code> 可以优化类似的搜索. 通过<code>makeClass()</code>构建出来的<code>CtClass</code>可以缓存在<code>ClassPool</code>里, 当再次查找相同class时, 就不需要再次去class path上搜索了.</p>
+<p>The users can extend the class search path. They can define a new class implementing ClassPath interface and give an instance of that class to insertClassPath() in ClassPool. This allows a non-standard resource to be included in the search path.</p>
+<p>用户可以拓展class search path. 他们可以将<code>ClassPath</code>接口实现类的实例通过<code>insertClassPath()</code>方法添加到<code>ClassPool</code>里. 这就可以允许一个非标准的资源路径加载到search path上.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.wangming.co/2019/05/01/javassist/Javasist%201%20Reading%20and%20writing%20bytecode/" data-id="ck2k1g07d00055c37aeq13x3h" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/05/02/javassist/Javasist%202%20ClassPool/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Javasist ClassPool
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/12/15/pegjs-document/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">PEG.js 文档 [译]</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/05/04/javassist/Javasist%204%20Introspection%20and%20customization/">Javasist Introspection and customization</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/03/javassist/Javasist%203%20Class%20loader/">Javasist Class Loader</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/02/javassist/Javasist%202%20ClassPool/">Javasist ClassPool</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/01/javassist/Javasist%201%20Reading%20and%20writing%20bytecode/">Javasist Reading and writing bytecode</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/15/pegjs-document/">PEG.js 文档 [译]</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 向南<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

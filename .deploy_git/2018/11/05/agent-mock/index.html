@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>通过Java Agent的redefineClasses实现Mock功能 | 向南</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="A)最近组内项目有个模块进行了较大规模的重构, 需要跑一下压力测试, 看一下性能如何. 但是介于产品的模式, 在正常场景下需要向通道发送消息, 然而在压测中, 我们希望这段行为能被mock掉.当时想到的方案可以采用Spring AOP, JMockit或者自己通过Javasisit&#x2F;ASM这种字节码框架来实现功能. 由于项目中我自己很少使用Spring AOP来做一些功能, 便没让它当首选方案,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过Java Agent的redefineClasses实现Mock功能">
+<meta property="og:url" content="http:&#x2F;&#x2F;www.wangming.co&#x2F;2018&#x2F;11&#x2F;05&#x2F;agent-mock&#x2F;index.html">
+<meta property="og:site_name" content="向南">
+<meta property="og:description" content="A)最近组内项目有个模块进行了较大规模的重构, 需要跑一下压力测试, 看一下性能如何. 但是介于产品的模式, 在正常场景下需要向通道发送消息, 然而在压测中, 我们希望这段行为能被mock掉.当时想到的方案可以采用Spring AOP, JMockit或者自己通过Javasisit&#x2F;ASM这种字节码框架来实现功能. 由于项目中我自己很少使用Spring AOP来做一些功能, 便没让它当首选方案,">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-04T05:49:02.502Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="向南" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">向南</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://www.wangming.co"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-agent-mock" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/05/agent-mock/" class="article-date">
+  <time datetime="2018-11-05T12:15:00.000Z" itemprop="datePublished">2018-11-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      通过Java Agent的redefineClasses实现Mock功能
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="A"><a href="#A" class="headerlink" title="A)"></a>A)</h1><p>最近组内项目有个模块进行了较大规模的重构, 需要跑一下压力测试, 看一下性能如何. 但是介于产品的模式, 在正常场景下需要向通道发送消息, 然而在压测中, 我们希望这段行为能被mock掉.<br>当时想到的方案可以采用Spring AOP, JMockit或者自己通过Javasisit/ASM这种字节码框架来实现功能.</p>
+<p>由于项目中我自己很少使用Spring AOP来做一些功能, 便没让它当首选方案, 研究了一下JMockit实现, 发现是使用动态Agent实现的.ok, 那么便初步定了一下方案Agent+Javasisit来实现(ASM手写字节码实在太痛苦).</p>
+<h1 id="B"><a href="#B" class="headerlink" title="B)"></a>B)</h1><blockquote>
+<p>这一段貌似是废话, 你们也看不见代码发生的真实地转变, 我只是记录一下心路历程.</p>
+</blockquote>
+<p>利用了2个小时, 采用Agent+Javasisit实现了一个小的模块, 基本功能也都实现了, 但是使用起来实在是太麻烦了, 代码耦合性太高. 于是又换了个思路, 去掉了Javasisit框架, 也完美地实现了功能.</p>
+<h1 id="C"><a href="#C" class="headerlink" title="C)"></a>C)</h1><p>整个mock框架分为俩部分.</p>
+<ul>
+<li>agent-core, mock的核心代码</li>
+<li>agent-client, 在这个工程中, 我们只需要在pom中引入需要替换的工程的依赖, 然后再agent-client中把要替换的类重写一遍就好了</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="核心部分"><a href="#核心部分" class="headerlink" title="核心部分"></a>核心部分</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">├── pom.xml</span><br><span class="line">└── src</span><br><span class="line">    ├── main</span><br><span class="line">    │   ├── java</span><br><span class="line">    │   │   └── co</span><br><span class="line">    │   │       └── wangming</span><br><span class="line">    │   │           └── agent</span><br><span class="line">    │   │               ├── Agent.java</span><br><span class="line">    │   │               └── ClassesLoadUtil.java</span><br><span class="line">    │   └── resources</span><br><span class="line">    │       └── META-INF</span><br><span class="line">    │           └── MANIFEST.MF</span><br><span class="line">    └── test</span><br><span class="line">        └── java</span><br><span class="line">            └── Test.java</span><br></pre></td></tr></table></figure>
+<p>核心就是俩个Java文件和一个MF文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Agent</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> ScheduledExecutorService scheduledExecutorService = <span class="keyword">new</span> ScheduledThreadPoolExecutor(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> List&lt;String&gt; hashCached = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">premain</span><span class="params">(String agentArgs, Instrumentation instrumentation)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"Agnet 进入!!! "</span> + agentArgs);</span><br><span class="line">		scheduledExecutorService.scheduleAtFixedRate(() -&gt; tryRedefine(instrumentation, agentArgs), <span class="number">0</span>, <span class="number">10</span>, TimeUnit.SECONDS);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">tryRedefine</span><span class="params">(Instrumentation instrumentation, String agentArgs)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		Class[] allLoadedClasses = instrumentation.getAllLoadedClasses();</span><br><span class="line"><span class="comment">//		System.out.println("allLoadedClasses数量:" + allLoadedClasses.length);</span></span><br><span class="line"></span><br><span class="line">		Map&lt;String, Class&gt; finupAllLoadedClasses = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">for</span> (Class loadedClass : allLoadedClasses) &#123;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">if</span> (loadedClass == <span class="keyword">null</span>) &#123;</span><br><span class="line">					<span class="keyword">continue</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (loadedClass.getCanonicalName() == <span class="keyword">null</span>) &#123;</span><br><span class="line">					<span class="keyword">continue</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (!loadedClass.getCanonicalName().startsWith(<span class="string">"com.finup"</span>)) &#123;</span><br><span class="line">					<span class="keyword">continue</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> (hashCached.contains(loadedClass.getCanonicalName())) &#123;</span><br><span class="line">					<span class="keyword">continue</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				finupAllLoadedClasses.put(loadedClass.getCanonicalName(), loadedClass);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		Map&lt;String, <span class="keyword">byte</span>[]&gt; rewriteClasses = ClassesLoadUtil.getRewriteClasses(agentArgs);</span><br><span class="line">		<span class="keyword">for</span> (String className : hashCached) &#123;</span><br><span class="line">			rewriteClasses.remove(className);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (finupAllLoadedClasses.size() == <span class="number">0</span> || rewriteClasses.size() == <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"finupAllLoadedClasses数量:"</span> + finupAllLoadedClasses.size());</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> (String className : rewriteClasses.keySet()) &#123;</span><br><span class="line">			<span class="keyword">byte</span>[] classBytes = rewriteClasses.get(className);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (classBytes == <span class="keyword">null</span> || classBytes.length == <span class="number">0</span>) &#123;</span><br><span class="line">				System.out.println(<span class="string">"从 rewriteClasses 找不到class: "</span> + className);</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			Class redefineClass = finupAllLoadedClasses.get(className);</span><br><span class="line">			<span class="keyword">if</span> (redefineClass == <span class="keyword">null</span>) &#123;</span><br><span class="line">				System.out.println(<span class="string">"从 finupAllLoadedClasses 找不到class: "</span> + className);</span><br><span class="line">				<span class="keyword">continue</span>;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			System.out.println(<span class="string">"开始redefineClasses: "</span> + className);</span><br><span class="line"></span><br><span class="line">			ClassDefinition classDefinition = <span class="keyword">new</span> ClassDefinition(redefineClass, classBytes);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				instrumentation.redefineClasses(classDefinition);</span><br><span class="line">				hashCached.add(className);</span><br><span class="line"></span><br><span class="line">				System.out.println(<span class="string">"结束redefineClasses: "</span> + className);</span><br><span class="line">			&#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125; <span class="keyword">catch</span> (UnmodifiableClassException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassesLoadUtil</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, <span class="keyword">byte</span>[]&gt; path2Classes = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, <span class="keyword">byte</span>[]&gt; className2Classes = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> havaLoaded = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">loadFromZipFile</span><span class="params">(String jarPath)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			ZipFile zipFile = <span class="keyword">new</span> ZipFile(jarPath);</span><br><span class="line">			Enumeration&lt;? extends ZipEntry&gt; entrys = zipFile.entries();</span><br><span class="line">			<span class="keyword">while</span> (entrys.hasMoreElements()) &#123;</span><br><span class="line">				ZipEntry zipEntry = entrys.nextElement();</span><br><span class="line">				entryRead(jarPath, zipEntry);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">entryRead</span><span class="params">(String jarPath, ZipEntry ze)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (ze.getSize() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">			String fileName = ze.getName();</span><br><span class="line">			<span class="keyword">if</span> (!fileName.endsWith(<span class="string">".class"</span>)) &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (!fileName.contains(<span class="string">"finup"</span>)) &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">try</span> (ZipFile zf = <span class="keyword">new</span> ZipFile(jarPath); InputStream input = zf.getInputStream(ze);</span><br><span class="line">			     ByteArrayOutputStream byteArrayOutputStream = <span class="keyword">new</span> ByteArrayOutputStream()) &#123;</span><br><span class="line">				<span class="keyword">if</span> (input == <span class="keyword">null</span>) &#123;</span><br><span class="line"><span class="comment">//								logger.error("Code Reload cant find file : " + fileName);</span></span><br><span class="line">					<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">int</span> b = <span class="number">0</span>;</span><br><span class="line">				<span class="keyword">while</span> ((b = input.read()) != -<span class="number">1</span>) &#123;</span><br><span class="line">					byteArrayOutputStream.write(b);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">byte</span>[] bytes = byteArrayOutputStream.toByteArray();</span><br><span class="line"></span><br><span class="line">				path2Classes.put(fileName, bytes);</span><br><span class="line"></span><br><span class="line">				String name1 = fileName.replaceAll(<span class="string">"\\.class"</span>, <span class="string">""</span>);</span><br><span class="line">				String name2 = name1.replaceAll(<span class="string">"/"</span>, <span class="string">"."</span>);</span><br><span class="line"></span><br><span class="line">				className2Classes.put(name2, bytes);</span><br><span class="line"></span><br><span class="line">				System.out.println(<span class="string">"加载文件: fileName : "</span> + fileName + <span class="string">".  className:"</span> + name2);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="comment">//			System.out.println(ze.getName() + " size is 0");</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> Map&lt;String, <span class="keyword">byte</span>[]&gt; getRewriteClasses(String agentArgs) &#123;</span><br><span class="line">		<span class="keyword">synchronized</span> (className2Classes) &#123;</span><br><span class="line">			<span class="keyword">if</span> (!havaLoaded) &#123;</span><br><span class="line">				loadFromZipFile(agentArgs);</span><br><span class="line">				havaLoaded = <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> className2Classes;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>MF</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Manifest-Version: 1.0</span><br><span class="line">Premain-Class: co.wangming.agent.Agent</span><br><span class="line">Can-Redefine-Classes: true</span><br><span class="line">Can-Retransform-Classes: true</span><br></pre></td></tr></table></figure>
+
+<p>基本上这三个文件就可以完成功能了.</p>
+<h2 id="agent-client"><a href="#agent-client" class="headerlink" title="agent-client"></a>agent-client</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">├── pom.xml</span><br><span class="line">└── src</span><br><span class="line">    ├── main</span><br><span class="line">    │   ├── java</span><br><span class="line">    │   │   └── co</span><br><span class="line">    │   │       └── wangming</span><br><span class="line">    │   │           └── agent_client</span><br><span class="line">    │   │               └── service</span><br><span class="line">    │   │                   └── TestService</span><br><span class="line">    │   └── resources</span><br><span class="line">    │       └── META-INF</span><br><span class="line">    │           └── MANIFEST.MF</span><br><span class="line">    └── test</span><br><span class="line">        └── java</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Manifest-Version: 1.0</span><br><span class="line">Premain-Class: co.wangming.agent.Agent</span><br><span class="line">Can-Redefine-Classes: true</span><br><span class="line">Can-Retransform-Classes: true</span><br></pre></td></tr></table></figure>
+<p>我们只需要把需要覆盖的<code>TestService</code>类在这里重写一下就好了, 但是注意, 不能删除/增加 方法/字段, 不能修改继承结构. 总而言之就是不能修改类的结构, 但是只是修改方法实现应该也能满足大多数需求了.</p>
+<blockquote>
+<p>以后有时间再想想怎么用Spring AOP来实现</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://www.wangming.co/2018/11/05/agent-mock/" data-id="ck2k1g06k00005c37g0f91g5q" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/11/14/java-books/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Java入门及书单
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/10/30/work-knife/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">工作/生活中用到的软件/插件/小工具</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/05/04/javassist/Javasist%204%20Introspection%20and%20customization/">Javasist Introspection and customization</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/03/javassist/Javasist%203%20Class%20loader/">Javasist Class Loader</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/02/javassist/Javasist%202%20ClassPool/">Javasist ClassPool</a>
+          </li>
+        
+          <li>
+            <a href="/2019/05/01/javassist/Javasist%201%20Reading%20and%20writing%20bytecode/">Javasist Reading and writing bytecode</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/15/pegjs-document/">PEG.js 文档 [译]</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 向南<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
