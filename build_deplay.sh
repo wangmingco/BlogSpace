@@ -1,2 +1,1 @@
-hexo generate
-hexo deplay
+hexo deploy
