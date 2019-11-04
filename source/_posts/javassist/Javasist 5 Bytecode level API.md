@@ -1,3 +1,8 @@
+---
+title: Javasist Bytecode level API
+date: 2019-05-06 20:15:00
+---
+
 Javassist also provides lower-level API for directly editing a class file. To use this level of API, you need detailed knowledge of the Java bytecode and the class file format while this level of API allows you any kind of modification of class files.
 
 If you want to just produce a simple class file, javassist.bytecode.ClassFileWriter might provide the best API for you. It is much faster than javassist.bytecode.ClassFile although its API is minimum.

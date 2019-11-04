@@ -1,3 +1,8 @@
+---
+title: Javasist Introspection and customization
+date: 2019-05-04 20:15:00
+---
+
 `CtClass`提供了方法以便于自省. Javassist 的自省能力和Java的反射API很像. CtClass 提供了getName(), getSuperclass(), getMethods()等方法. CtClass仍然提供了修改一个类定义的方法.它允许添加新的字段/构造器/方法. 修改(Instrumenting)方法体也是可以的.
 
 CtClass provides methods for introspection. The introspective ability of Javassist is compatible with that of the Java reflection API. CtClass provides getName(), getSuperclass(), getMethods(), and so on. CtClass also provides methods for modifying a class definition. It allows to add a new field, constructor, and method. Instrumenting a method body is also possible.

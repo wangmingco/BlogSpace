@@ -1,3 +1,8 @@
+---
+title: Javasist Varargs
+date: 2019-05-08 20:15:00
+---
+
 Currently, Javassist does not directly support varargs. So to make a method with varargs, you must explicitly set a method modifier. But this is easy. Suppose that now you want to make the following method:
 
 public int length(int... args) { return args.length; }

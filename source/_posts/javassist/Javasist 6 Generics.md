@@ -1,3 +1,8 @@
+---
+title: Javasist Generics
+date: 2019-05-07 20:15:00
+---
+
 The lower-level API of Javassist fully supports generics introduced by Java 5. On the other hand, the higher-level API such as CtClass does not directly support generics. However, this is not a serious problem for bytecode transformation.
 
 The generics of Java is implemented by the erasure technique. After compilation, all type parameters are dropped off. For example, suppose that your source code declares a parameterized type Vector<String>:

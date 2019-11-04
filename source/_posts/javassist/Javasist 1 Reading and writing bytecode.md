@@ -1,3 +1,8 @@
+---
+title: Javasist Reading and writing bytecode
+date: 2019-05-01 20:15:00
+---
+
 `Javassist` is a class library for dealing with Java bytecode. Java bytecode is stored in a binary file called a class file. Each class file contains one Java class or interface.
 
 `Javassist` 是一个用于处理 Java 字节码的类库, Java 字节码被存储在一个后缀为 class 的二进制文件中. 每个 class 文件包含一个 Java 类或者 Java 接口.

@@ -1,3 +1,8 @@
+---
+title: Javasist ClassPool
+date: 2019-05-02 20:15:00
+---
+
 A ClassPool object is a container of CtClass objects. Once a CtClass object is created, it is recorded in a ClassPool for ever. This is because a compiler may need to access the CtClass object later when it compiles source code that refers to the class represented by that CtClass.
 
 `ClassPool`对象是CtClass对象的集合. 一旦CtClass对象被创建出来, 它就会被永远地保存在ClassPool中. 这是因为编译器在编译源码的时候可能还需要访问这些CtClass对象.

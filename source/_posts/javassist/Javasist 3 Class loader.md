@@ -1,3 +1,8 @@
+---
+title: Javasist Class Loader
+date: 2019-05-03 20:15:00
+---
+
 If what classes must be modified is known in advance, the easiest way for modifying the classes is as follows:
 
 1. Get a CtClass object by calling ClassPool.get(),
